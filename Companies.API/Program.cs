@@ -1,4 +1,6 @@
 using Companies.API.Data;
+using Companies.API.Middleware;
+using Companies.API.Services;
 using Microsoft.EntityFrameworkCore;
 internal class Program
 {
@@ -12,6 +14,8 @@ internal class Program
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+
+       // builder.Services.AddHostedService<DataSeedService>();
 
         var app = builder.Build();
 
@@ -30,6 +34,7 @@ internal class Program
 
         app.UseAuthorization();
 
+        app.UseDemoMiddleware();
 
         app.Map("/api/demo", builder =>
         {
