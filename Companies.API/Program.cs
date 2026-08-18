@@ -30,6 +30,25 @@ internal class Program
 
         app.UseAuthorization();
 
+
+        app.Map("/api/demo", builder =>
+        {
+            builder.Use(async (context, next) =>
+            {
+                Console.WriteLine("1. log before the next delegate");
+                await next.Invoke();
+                Console.WriteLine("3. log in use after run");
+            });
+
+            builder.Run(async context =>
+            {
+                Console.WriteLine("2. log in the run method");
+                await context.Response.WriteAsync("Hello from demo path");
+            });
+        });
+
+
+
         app.MapControllers();
 
         app.Run();
