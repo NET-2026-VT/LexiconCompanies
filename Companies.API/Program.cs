@@ -14,7 +14,8 @@ internal class Program
 
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        //builder.Services.AddOpenApi();
+        builder.Services.AddSwaggerGen();
 
         builder.Services.AddHostedService<DataSeedService>();
 
@@ -28,12 +29,13 @@ internal class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+           // app.MapOpenApi();
+           app.UseSwagger();
 
-            app.UseSwaggerUI(opt =>
-            {
-                opt.SwaggerEndpoint("/openapi/v1.json", "v1");
-            });
+           app.UseSwaggerUI(); // opt =>
+            //{
+            //    opt.SwaggerEndpoint("/openapi/v1.json", "v1");
+            //});
         }
 
         app.UseHttpsRedirection();
