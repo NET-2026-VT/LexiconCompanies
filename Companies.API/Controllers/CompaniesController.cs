@@ -17,14 +17,14 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Company>>> GetCompany()
     {
-        return await _context.Company.ToListAsync();
+        return await _context.Companies.ToListAsync();
     }
 
     // GET: api/Company/5
     [HttpGet("{id}")]
     public async Task<ActionResult<Company>> GetCompany(Guid id)
     {
-        var company = await _context.Company.FindAsync(id);
+        var company = await _context.Companies.FindAsync(id);
 
         if (company == null)
         {
@@ -70,7 +70,7 @@ public class CompaniesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Company>> PostCompany(Company company)
     {
-        _context.Company.Add(company);
+        _context.Companies.Add(company);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("GetCompany", new { id = company.Id }, company);
@@ -80,13 +80,13 @@ public class CompaniesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCompany(System.Guid? id)
     {
-        var company = await _context.Company.FindAsync(id);
+        var company = await _context.Companies.FindAsync(id);
         if (company == null)
         {
             return NotFound();
         }
 
-        _context.Company.Remove(company);
+        _context.Companies.Remove(company);
         await _context.SaveChangesAsync();
 
         return NoContent();
@@ -94,6 +94,6 @@ public class CompaniesController : ControllerBase
 
     private bool CompanyExists(System.Guid? id)
     {
-        return _context.Company.Any(e => e.Id == id);
+        return _context.Companies.Any(e => e.Id == id);
     }
 }

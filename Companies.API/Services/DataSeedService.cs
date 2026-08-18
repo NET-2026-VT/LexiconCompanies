@@ -26,12 +26,12 @@ internal class DataSeedService : IHostedService
         ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>()
                             ?? throw new ArgumentNullException();
 
-        if (await context.Company.AnyAsync(cancellationToken)) return;
+        if (await context.Companies.AnyAsync(cancellationToken)) return;
 
         try
         {
             IEnumerable<Company> companies = GenerateCompanies(100000);
-            context.Company.AddRange(companies);
+            context.Companies.AddRange(companies);
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Seed complete");
         }
