@@ -2,6 +2,7 @@ using Companies.API.Data;
 using Companies.API.Middleware;
 using Companies.API.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 internal class Program
 {
     private static void Main(string[] args)
@@ -15,7 +16,12 @@ internal class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
-       // builder.Services.AddHostedService<DataSeedService>();
+        builder.Services.AddHostedService<DataSeedService>();
+
+        //builder.Services.ConfigureHttpJsonOptions(options =>
+        //{
+        //    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+        //});
 
         var app = builder.Build();
 
