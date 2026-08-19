@@ -4,6 +4,7 @@ using Companies.API.Models.Entities;
 using Companies.API.Data;
 using Companies.API.Models.DTOs.CompanyDtos;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 [Route("api/companies")]
 [ApiController]
@@ -24,9 +25,15 @@ public class CompaniesController : ControllerBase
     {
         //In memory
         var companies = await _context.Companies.Include(c => c.Address).ToListAsync();
-        var demoDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+        var debugDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
+        //Projection 1
+        var debugDto2 = await _context.Companies.ProjectTo<CompanyDto>(_mapper.ConfigurationProvider).ToListAsync();
 
+        //Projection 2
+        var dto = await _mapper.ProjectTo<CompanyDto>(_context.Companies).ToListAsync();
+
+        //With select
         //var dto = await _context.Companies.Select(c => new CompanyDto
         //{
         //    Id = c.Id,
@@ -37,7 +44,7 @@ public class CompaniesController : ControllerBase
 
         //}).ToListAsync();
 
-        return Ok();
+        return dto;
     }
 
     // GET: api/Company/5
@@ -52,6 +59,17 @@ public class CompaniesController : ControllerBase
         }
 
         return company;
+
+        //var dto = await _context.Companies.Where(c => c.Id == id)
+        //                                  .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
+        //                                  .FirstOrDefaultAsync();
+
+        ////var dto2 = await _mapper.ProjectTo<CompanyDto>(_context.Companies.Where(c => c.Id == id))
+        ////                        .FirstOrDefaultAsync();
+
+        //if (dto == null) return NotFound();
+
+        //return dto;
     }
 
     //// PUT: api/Company/5
