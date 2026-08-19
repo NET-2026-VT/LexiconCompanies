@@ -20,6 +20,7 @@ internal class Program
         //});
  
         builder.Services.AddSwaggerGen();
+        builder.Services.AddAutoMapper(cfg => { }, typeof(MapperProfile));
 
         builder.Services.AddHostedService<DataSeedService>();
 

@@ -3,31 +3,41 @@ using Microsoft.EntityFrameworkCore;
 using Companies.API.Models.Entities;
 using Companies.API.Data;
 using Companies.API.Models.DTOs.CompanyDtos;
+using AutoMapper;
 
 [Route("api/companies")]
 [ApiController]
 public class CompaniesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    public CompaniesController(ApplicationDbContext context)
+    private readonly IMapper _mapper;
+
+    public CompaniesController(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     // GET: api/Company
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany()
     {
-        var dto = await _context.Companies.Select(c => new CompanyDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            StreetAddress = c.Address.StreetAddress,
-            City = c.Address.City,
-            Country = c.Address.Country
-        }).ToListAsync();
+        //In memory
+        var companies = await _context.Companies.Include(c => c.Address).ToListAsync();
+        var demoDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-        return dto;
+
+        //var dto = await _context.Companies.Select(c => new CompanyDto
+        //{
+        //    Id = c.Id,
+        //    Name = c.Name,
+        //    StreetAddress = c.Address.StreetAddress,
+        //    City = c.Address.City,
+        //    Country = c.Address.Country
+
+        //}).ToListAsync();
+
+        return Ok();
     }
 
     // GET: api/Company/5

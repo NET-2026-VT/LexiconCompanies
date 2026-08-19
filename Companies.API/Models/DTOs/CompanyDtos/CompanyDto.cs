@@ -4,8 +4,8 @@ public record CompanyDto
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }
-    public required string StreetAddress { get; set; }
-    public required string City { get; set; }
+    public required string AddressStreetAddress { get; set; }
+    public required string AddressCity { get; set; }
     public string? Country { get; set; }
 
 }
