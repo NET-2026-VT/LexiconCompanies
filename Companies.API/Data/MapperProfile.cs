@@ -16,5 +16,13 @@ public class MapperProfile : Profile
                                       $"{(string.IsNullOrEmpty(src.Address.Country) ? string.Empty : ", ")}" +
                                       $"{src.Address.Country}"));
 
+
+        CreateMap<CreateCompanyDto, Address>();
+
+        CreateMap<CreateCompanyDto, Company>()
+            .ForMember(
+             dest => dest.Address,
+             opt => opt.MapFrom(src => src));
+
     }
 }

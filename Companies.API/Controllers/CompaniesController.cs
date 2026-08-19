@@ -94,16 +94,19 @@ public class CompaniesController : ControllerBase
     //    return NoContent();
     //}
 
-    //// POST: api/Company
-    //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    //[HttpPost]
-    //public async Task<ActionResult<Company>> PostCompany(Company company)
-    //{
-    //    _context.Companies.Add(company);
-    //    await _context.SaveChangesAsync();
+    
+    [HttpPost]
+    public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto dto)
+    {
+        var company = _mapper.Map<Company>(dto);
 
-    //    return CreatedAtAction("GetCompany", new { id = company.Id }, company);
-    //}
+        _context.Companies.Add(company);
+        await _context.SaveChangesAsync();
+
+        var created = _mapper.Map<CompanyDto>(company);
+
+        return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
+    }
 
     //// DELETE: api/Company/5
     //[HttpDelete("{id}")]
