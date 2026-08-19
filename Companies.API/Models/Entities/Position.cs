@@ -1,13 +1,10 @@
 ﻿namespace Companies.API.Models.Entities;
 
-public class Company
+public class Position
 {
     public Guid Id { get; set; }
+    public required string Name { get; set; }
 
-    public required string Name { get; set; } 
-
-    //Navigation property
-    public Address Address { get; set; } = null!;
     public ICollection<Employee> Employees { get; set; } = [];
 
 }

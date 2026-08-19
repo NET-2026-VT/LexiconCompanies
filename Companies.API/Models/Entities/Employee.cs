@@ -17,12 +17,3 @@ public class Employee
     public Company Company { get; set; } = null!;
     public Position Position { get; set; } = null!;
 }
-
-public class Position
-{
-    public Guid Id { get; set; }
-    public required string Name { get; set; }
-
-    public ICollection<Employee> Employees { get; set; } = [];
-
-}
