@@ -13,54 +13,24 @@ internal class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
         builder.Services.AddControllers();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        //builder.Services.AddOpenApi();
+ 
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddHostedService<DataSeedService>();
-
-        //builder.Services.ConfigureHttpJsonOptions(options =>
-        //{
-        //    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
-        //});
 
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-           // app.MapOpenApi();
            app.UseSwagger();
 
-           app.UseSwaggerUI(); // opt =>
-            //{
-            //    opt.SwaggerEndpoint("/openapi/v1.json", "v1");
-            //});
+           app.UseSwaggerUI(); 
         }
 
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
-        app.UseDemoMiddleware();
-
-        app.Map("/api/demo", builder =>
-        {
-            builder.Use(async (context, next) =>
-            {
-                Console.WriteLine("1. log before the next delegate");
-                await next.Invoke();
-                Console.WriteLine("3. log in use after run");
-            });
-
-            builder.Run(async context =>
-            {
-                Console.WriteLine("2. log in the run method");
-                await context.Response.WriteAsync("Hello from demo path");
-            });
-        });
-
-
 
         app.MapControllers();
 
