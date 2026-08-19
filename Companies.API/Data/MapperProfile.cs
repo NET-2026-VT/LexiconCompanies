@@ -10,8 +10,11 @@ public class MapperProfile : Profile
     {
         CreateMap<Company, CompanyDto>()
             .ForMember(
-             dest => dest.Address,
-             opt => opt.MapFrom(src => $"{src.Address.StreetAddress}, {src.Address.City}"));
-            
+            dest => dest.Address,
+            opt => opt.MapFrom(src => $"{src.Address.StreetAddress}, " +
+                                      $"{src.Address.City}" +
+                                      $"{(string.IsNullOrEmpty(src.Address.Country) ? string.Empty : ", ")}" +
+                                      $"{src.Address.Country}"));
+
     }
 }

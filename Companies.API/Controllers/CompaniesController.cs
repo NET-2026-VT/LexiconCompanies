@@ -24,11 +24,11 @@ public class CompaniesController : ControllerBase
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany()
     {
         //In memory
-        var companies = await _context.Companies.Include(c => c.Address).ToListAsync();
-        var debugDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+        //var companies = await _context.Companies.Include(c => c.Address).ToListAsync();
+        //var debugDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-        //Projection 1
-        var debugDto2 = await _context.Companies.ProjectTo<CompanyDto>(_mapper.ConfigurationProvider).ToListAsync();
+        ////Projection 1
+        //var debugDto2 = await _context.Companies.ProjectTo<CompanyDto>(_mapper.ConfigurationProvider).ToListAsync();
 
         //Projection 2
         var dto = await _mapper.ProjectTo<CompanyDto>(_context.Companies).ToListAsync();
@@ -49,27 +49,18 @@ public class CompaniesController : ControllerBase
 
     // GET: api/Company/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Company>> GetCompany(Guid id)
+    public async Task<ActionResult<CompanyDto>> GetCompany(Guid id)
     {
-        var company = await _context.Companies.FindAsync(id);
+        var dto = await _context.Companies.Where(c => c.Id == id)
+                                          .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
+                                          .FirstOrDefaultAsync();
 
-        if (company == null)
-        {
-            return NotFound();
-        }
+        //var dto2 = await _mapper.ProjectTo<CompanyDto>(_context.Companies.Where(c => c.Id == id))
+        //                        .FirstOrDefaultAsync();
 
-        return company;
+        if (dto == null) return NotFound();
 
-        //var dto = await _context.Companies.Where(c => c.Id == id)
-        //                                  .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
-        //                                  .FirstOrDefaultAsync();
-
-        ////var dto2 = await _mapper.ProjectTo<CompanyDto>(_context.Companies.Where(c => c.Id == id))
-        ////                        .FirstOrDefaultAsync();
-
-        //if (dto == null) return NotFound();
-
-        //return dto;
+        return dto;
     }
 
     //// PUT: api/Company/5
