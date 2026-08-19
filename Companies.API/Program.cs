@@ -1,5 +1,6 @@
 using Companies.API.Data;
 using Companies.API.Middleware;
+using Companies.API.Migrations;
 using Companies.API.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;

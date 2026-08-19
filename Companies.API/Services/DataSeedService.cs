@@ -47,8 +47,12 @@ internal class DataSeedService : IHostedService
         var faker = new Faker<Company>("sv").Rules((f, c) =>
         {
             c.Name = f.Company.CompanyName();
-            c.Address = $"{f.Address.StreetAddress()}, {f.Address.City()}";
-            c.Country = f.Address.Country();
+            //c.Address = new Address 
+            //{ 
+            //    City = f.Address.City(),
+            //    StreetAddress = f.Address.StreetAddress(),
+            //    Country = f.Address.Country()
+            //};
         });
 
         return faker.Generate(numberOfCompanies);
