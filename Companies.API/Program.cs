@@ -14,6 +14,10 @@ internal class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
         builder.Services.AddControllers();
+        //    .AddJsonOptions(opt =>
+        //{
+        //    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        //});
  
         builder.Services.AddSwaggerGen();
 
