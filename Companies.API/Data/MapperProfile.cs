@@ -34,10 +34,8 @@ public class MapperProfile : Profile
                  //   opt => opt.Ignore());
 
 
-
         //Employee mappings
-        CreateMap<Employee, EmployeeDto>();
-
+        CreateMap<Employee, EmployeeDto>().ReverseMap();
 
     }
 }

@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Companies.API.Models.Entities;
-using Companies.API.Data;
-using Companies.API.Models.DTOs.CompanyDtos;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Companies.API.Data;
+using Companies.API.Models.DTOs.CompanyDtos;
+using Companies.API.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 [Route("api/companies")]
 [ApiController]
@@ -22,14 +23,22 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(bool includeEmployees)
     {
-        var dto = includeEmployees ? await _mapper.ProjectTo<CompanyDto>(
-                                                        _context.Companies.Include(c => c.Employees))
-                                                       .ToListAsync() :
+        //var dto = includeEmployees ? await _mapper.ProjectTo<CompanyDto>(
+        //                                                _context.Companies.Include(c => c.Employees))
+        //                                               .ToListAsync() :
 
-                                     await _mapper.ProjectTo<CompanyDto>(
-                                                        _context.Companies)
-                                                        .ToListAsync();
-        return dto;
+        //                             await _mapper.ProjectTo<CompanyDto>(
+        //                                                _context.Companies)
+        //                                                .ToListAsync();
+
+        var query = _context.Companies.Include(c => c.Address);
+
+        var dto2 = includeEmployees ? _mapper.Map<IEnumerable<CompanyDto>>(await query.Include(c => c.Employees)
+                                                            .ThenInclude(e => e.Position)
+                                                            .ToListAsync()) :
+
+                                     _mapper.Map<IEnumerable<CompanyDto>>(await query.ToListAsync());
+        return Ok(dto2);
     }
 
     [HttpGet("{id}")]
