@@ -17,12 +17,18 @@ public class MapperProfile : Profile
                                       $"{src.Address.Country}"));
 
 
-        CreateMap<CreateCompanyDto, Address>();
+       // CreateMap<CreateCompanyDto, Address>();
 
-        CreateMap<CreateCompanyDto, Company>()
-            .ForMember(
-             dest => dest.Address,
-             opt => opt.MapFrom(src => src));
+        //CreateMap<CreateCompanyDto, Company>()
+        //    .ForMember(
+        //     dest => dest.Address,
+        //     opt => opt.MapFrom(src => src));
+
+        CreateMap<CreateCompanyDto, Company>();
+        CreateMap<UpdateCompanyDto, Company>();
+                 //.ForMember(
+                 //   dest => dest.Id,
+                 //   opt => opt.Ignore());
 
     }
 }
