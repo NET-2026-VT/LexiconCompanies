@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Companies.API.Models.DTOs.CompanyDtos;
+using Companies.API.Models.DTOs.EmployeeDtos;
 using Companies.API.Models.Entities;
 
 namespace Companies.API.Data;
@@ -8,6 +9,8 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
+
+        //Company mappings
         CreateMap<Company, CompanyDto>()
             .ForMember(
             dest => dest.Address,
@@ -29,6 +32,12 @@ public class MapperProfile : Profile
                  //.ForMember(
                  //   dest => dest.Id,
                  //   opt => opt.Ignore());
+
+
+
+        //Employee mappings
+        CreateMap<Employee, EmployeeDto>();
+
 
     }
 }
