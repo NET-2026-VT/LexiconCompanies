@@ -74,24 +74,19 @@ public class CompaniesController : ControllerBase
         return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
     }
 
-    //// DELETE: api/Company/5
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> DeleteCompany(System.Guid? id)
-    //{
-    //    var company = await _context.Companies.FindAsync(id);
-    //    if (company == null)
-    //    {
-    //        return NotFound();
-    //    }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCompany(Guid? id)
+    {
+        var company = await _context.Companies
+                                .FirstOrDefaultAsync(c => c.Id.Equals(id));
 
-    //    _context.Companies.Remove(company);
-    //    await _context.SaveChangesAsync();
+        if (company == null) return NotFound();
 
-    //    return NoContent();
-    //}
+        _context.Companies.Remove(company);
+        await _context.SaveChangesAsync();
 
-    //private bool CompanyExists(System.Guid? id)
-    //{
-    //    return _context.Companies.Any(e => e.Id == id);
-    //}
+        return NoContent();
+    }
+
+
 }
