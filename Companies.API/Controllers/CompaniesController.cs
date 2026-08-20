@@ -19,35 +19,13 @@ public class CompaniesController : ControllerBase
         _mapper = mapper;
     }
 
-    // GET: api/Company
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany()
     {
-        //In memory
-        //var companies = await _context.Companies.Include(c => c.Address).ToListAsync();
-        //var debugDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
-
-        ////Projection 1
-        //var debugDto2 = await _context.Companies.ProjectTo<CompanyDto>(_mapper.ConfigurationProvider).ToListAsync();
-
-        //Projection 2
         var dto = await _mapper.ProjectTo<CompanyDto>(_context.Companies).ToListAsync();
-
-        //With select
-        //var dto = await _context.Companies.Select(c => new CompanyDto
-        //{
-        //    Id = c.Id,
-        //    Name = c.Name,
-        //    StreetAddress = c.Address.StreetAddress,
-        //    City = c.Address.City,
-        //    Country = c.Address.Country
-
-        //}).ToListAsync();
-
         return dto;
     }
 
-    // GET: api/Company/5
     [HttpGet("{id}")]
     public async Task<ActionResult<CompanyDto>> GetCompany(Guid id)
     {
