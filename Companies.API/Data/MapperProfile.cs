@@ -35,7 +35,8 @@ public class MapperProfile : Profile
 
 
         //Employee mappings
-        CreateMap<Employee, EmployeeDto>().ReverseMap();
+        CreateMap<Employee, EmployeeDto>();
+        CreateMap<CreateEmployeeDto, Employee>();
 
     }
 }

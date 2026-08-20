@@ -7,6 +7,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Company> Companies { get; set; } = default!;
     public DbSet<Employee> Emplpoyees { get; set; } = default!;
+    public DbSet<Position> Positions { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -14,5 +15,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         modelBuilder.Entity<Company>().ToTable("Company");
         modelBuilder.Entity<Employee>().ToTable("Employee");
+        modelBuilder.Entity<Position>().ToTable("Position");
     }
 }

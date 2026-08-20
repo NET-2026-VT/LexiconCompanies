@@ -4,5 +4,5 @@ namespace Companies.API.Models.DTOs.CompanyDtos;
 
 public record CreateCompanyDto : CompanyManipulationDto
 {
-    public IEnumerable<EmployeeDto>? Employees { get; set; }
+    public IEnumerable<CreateEmployeeDto>? Employees { get; set; }
 }

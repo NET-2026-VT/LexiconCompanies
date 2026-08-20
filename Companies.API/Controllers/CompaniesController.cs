@@ -79,12 +79,30 @@ public class CompaniesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto dto)
     {
+        if (dto.Employees is not null && dto.Employees.Any())
+        {
+            var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
+            var validIds = await _context.Positions
+                                         .Where(p => positionIds.Contains(p.Id))
+                                         .Select(p => p.Id)
+                                         .ToListAsync();
+
+            var invalidIds = positionIds.Except(validIds).ToList();
+            if (invalidIds.Any())
+                return NotFound($"Position(s) not found: {string.Join(", ", invalidIds)}");
+        }
+
+
         var company = _mapper.Map<Company>(dto);
 
         _context.Companies.Add(company);
         await _context.SaveChangesAsync();
 
-        var created = _mapper.Map<CompanyDto>(company);
+        // var created = _mapper.Map<CompanyDto>(company);
+        var created = await _context.Companies
+                                    .Where(c => c.Id == company.Id)
+                                    .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
+                                    .FirstAsync();
 
         return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
     }
