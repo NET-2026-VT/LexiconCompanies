@@ -111,4 +111,30 @@ public class EmployeesController : ControllerBase
         return Ok(_mapper.Map<EmployeeDto>(employeeToPatch)); //just for demo
        // return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployee(Guid companyId, Guid id)
+    {
+        var company = await _context.Companies.AnyAsync(c => c.Id.Equals(companyId));
+        if (!company)
+            return Problem(
+                title: "Company not found.",
+                detail: $"No company with id {companyId} exists.",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path.ToString());
+
+        var employee = await _context.Employees
+                                     .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId);
+        if (employee is null)
+            return Problem(
+                title: "Employee not found.",
+                detail: $"No employee with id {id} exists for company {companyId}.",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path.ToString());
+
+        _context.Employees.Remove(employee);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
