@@ -6,7 +6,7 @@ namespace Companies.API.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<Company> Companies { get; set; } = default!;
-    public DbSet<Employee> Emplpoyees { get; set; } = default!;
+    public DbSet<Employee> Employees { get; set; } = default!;
     public DbSet<Position> Positions { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
