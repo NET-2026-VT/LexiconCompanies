@@ -34,4 +34,9 @@ public class EmployeesController : ControllerBase
         return employeeDtos;
                     
     }
-}
+
+    [HttpPost]
+    public async Task<ActionResult<EmployeeDto>> PostEmployee(Guid companyId, CreateEmployeeDto dto)
+    {
+
+    }

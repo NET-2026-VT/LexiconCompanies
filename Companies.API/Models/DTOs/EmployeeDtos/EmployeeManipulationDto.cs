@@ -7,13 +7,14 @@ public record EmployeeManipulationDto
     [Required(ErrorMessage = "Employee name is a required field.")]
     [MaxLength(30, ErrorMessage = "Maximum length for the Name is 30 characters.")]
     [MinLength(2)]
-    public required string Name { get; init; }
+    public string Name { get; init; } = null!;
 
     [Required(ErrorMessage = "Age is a required field.")]
     [Range(18, 90)]
     public int Age { get; init; }
 
-    public required Guid PositionId { get; init; }
+    [Required]
+    public Guid PositionId { get; init; }
 }
 
 public record CreateEmployeeDto : EmployeeManipulationDto { }
