@@ -4,6 +4,7 @@ using Companies.API.Data;
 using Companies.API.Models.DTOs.EmployeeDtos;
 using Companies.API.Models.Entities;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -74,6 +75,8 @@ public class EmployeesController : ControllerBase
         return CreatedAtRoute("GetEmployeeById", new { companyId, id = created.Id }, created);
     }
 
+
+    //Requires content-type header to "application/json-patch+json"
     [HttpPatch("{id}")]
     public async Task<IActionResult> PatchEmployee(Guid companyId, Guid id, JsonPatchDocument<UpdateEmployeeDto> patchDocument)
     {
@@ -94,7 +97,8 @@ public class EmployeesController : ControllerBase
 
         var employeeToPatchDto = _mapper.Map<UpdateEmployeeDto>(employeeToPatch);
 
-        patchDocument.ApplyTo(employeeToPatchDto, ModelState); // Not valid patch-operations
+        patchDocument.ApplyTo(employeeToPatchDto, 
+            e => ModelState.AddModelError(e.Operation.path ?? "JsonPatch", e.ErrorMessage)); // Not valid patch-operations
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         TryValidateModel(employeeToPatchDto);                  // Validate Dto (Attributes)
