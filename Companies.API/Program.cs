@@ -13,7 +13,11 @@ internal class Program
         var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(opt =>
+        {
+            opt.ReturnHttpNotAcceptable = true;
+        })
+        .AddXmlDataContractSerializerFormatters();
                        // .AddNewtonsoftJson();
         //    .AddJsonOptions(opt =>
         //{
