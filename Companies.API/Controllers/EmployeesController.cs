@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Companies.API.Data;
 using Companies.API.Models.DTOs.EmployeeDtos;
 using Companies.API.Models.Entities;
@@ -35,6 +36,21 @@ public class EmployeesController : ControllerBase
 
     }
 
+    [HttpGet("{id}", Name = "GetEmployeeById")]
+    public async Task<ActionResult<EmployeeDto>> GetEmployee(Guid companyId, Guid id)
+    {
+        var companyExists = await _context.Companies.AnyAsync(c => c.Id.Equals(companyId));
+        if (!companyExists) return NotFound();
+
+        var dto = await _mapper.ProjectTo<EmployeeDto>(_context.Employees
+                               .Where(e => e.Id == id && e.CompanyId == companyId))
+                               .FirstOrDefaultAsync();
+
+        if (dto is null) return NotFound();
+
+        return dto;
+    }
+
     [HttpPost]
     public async Task<ActionResult<EmployeeDto>> PostEmployee(Guid companyId, CreateEmployeeDto dto)
     {
@@ -54,6 +70,6 @@ public class EmployeesController : ControllerBase
 
         var created = _mapper.Map<EmployeeDto>(employee);
 
-        return CreatedAtAction(nameof(GetEmployees), new { companyId, id = created.Id }, created); //ToDo Fix!!!!!!
+        return CreatedAtRoute("GetEmployeeById", new { companyId, id = created.Id }, created);
     }
 }
