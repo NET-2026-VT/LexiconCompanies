@@ -14,15 +14,15 @@ public record CompanyManipulationDto
     [Required(ErrorMessage = "{0} is a required field.")]
     [MaxLength(60, ErrorMessage = "Maximum length for {0} is {1} characters.")]
     [MinLength(5, ErrorMessage = "Minimum length for {0} is {1} characters.")]
-    public required string AddressStreetAddress { get; init; }
+    public required string StreetAddress { get; init; }
 
     [Display(Name = "Company city")]
     [Required(ErrorMessage = "{0} is a required field.")]
     [MaxLength(60, ErrorMessage = "Maximum length for {0} is {1} characters.")]
     [MinLength(2, ErrorMessage = "Minimum length for {0} is {1} characters.")]
-    public required string AddressCity { get; init; }
+    public required string City { get; init; }
 
     [MaxLength(30, ErrorMessage = "Maximum length for {0} is {1} characters.")]
     [MinLength(2, ErrorMessage = "Minimum length for {0} is {1} characters.")]
-    public string? AddressCountry { get; init; }
+    public string? Country { get; init; }
 }
