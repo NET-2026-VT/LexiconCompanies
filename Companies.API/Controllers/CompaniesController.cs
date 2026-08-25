@@ -122,4 +122,24 @@ public class CompaniesController : ControllerBase
     }
 
 
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
+    {
+        var company = await _context.Companies
+                                    .Include(c => c.Address)
+                                    .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (company is null) return NotFound();
+
+        // Uppdatera bara de fält som faktiskt skickades med (inte null)
+        if (dto.Name is not null) company.Name = dto.Name;
+        if (dto.StreetAddress is not null) company.Address.StreetAddress = dto.StreetAddress;
+        if (dto.City is not null) company.Address.City = dto.City;
+        if (dto.Country is not null) company.Address.Country = dto.Country;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(_mapper.Map<CompanyDto>(company));
+    }
+
 }
