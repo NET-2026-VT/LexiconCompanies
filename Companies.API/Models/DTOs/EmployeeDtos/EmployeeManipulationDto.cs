@@ -16,6 +16,3 @@ public record EmployeeManipulationDto
     [Required]
     public Guid PositionId { get; init; }
 }
-
-public record CreateEmployeeDto : EmployeeManipulationDto { }
-public record UpdateEmployeeDto : EmployeeManipulationDto { }

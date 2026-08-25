@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Companies.API.Data;
 using Companies.API.Models.DTOs.EmployeeDtos;
 using Companies.API.Models.Entities;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,5 +72,39 @@ public class EmployeesController : ControllerBase
         var created = _mapper.Map<EmployeeDto>(employee);
 
         return CreatedAtRoute("GetEmployeeById", new { companyId, id = created.Id }, created);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchEmployee(Guid companyId, Guid id, JsonPatchDocument<UpdateEmployeeDto> patchDocument)
+    {
+        var companyExists = await _context.Companies.AnyAsync(c => c.Id.Equals(companyId));
+
+        if (!companyExists) return Problem(
+            statusCode: StatusCodes.Status404NotFound,
+            title: "Company not found",
+            detail: $"Company with id:{companyId} could not be located",
+            instance: Request.Path.ToString()
+            );
+
+        var employeeToPatch = await _context.Employees
+                                           .Include(e => e.Position)
+                                           .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId);
+
+        if (employeeToPatch is null) return NotFound();
+
+        var employeeToPatchDto = _mapper.Map<UpdateEmployeeDto>(employeeToPatch);
+
+        patchDocument.ApplyTo(employeeToPatchDto, ModelState); // Not valid patch-operations
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        TryValidateModel(employeeToPatchDto);                  // Validate Dto (Attributes)
+        if (!ModelState.IsValid) return UnprocessableEntity(ModelState);
+
+        _mapper.Map(employeeToPatchDto, employeeToPatch);
+        await _context.SaveChangesAsync();
+
+
+        return Ok(_mapper.Map<EmployeeDto>(employeeToPatch)); //just for demo
+       // return NoContent();
     }
 }
