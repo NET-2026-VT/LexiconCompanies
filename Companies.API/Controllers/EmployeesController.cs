@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Companies.API.Data;
+using Companies.API.Migrations;
 using Companies.API.Models.DTOs.EmployeeDtos;
 using Companies.API.Models.Entities;
 using Microsoft.AspNetCore.JsonPatch;
@@ -93,7 +94,12 @@ public class EmployeesController : ControllerBase
                                            .Include(e => e.Position)
                                            .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId);
 
-        if (employeeToPatch is null) return NotFound();
+        if (employeeToPatch is null)
+            return Problem(
+                title: "Employee not found.",
+                detail: $"No employee with id {id} exists for company {companyId}.",
+                statusCode: StatusCodes.Status404NotFound,
+                instance: Request.Path.ToString());
 
         var employeeToPatchDto = _mapper.Map<UpdateEmployeeDto>(employeeToPatch);
 
