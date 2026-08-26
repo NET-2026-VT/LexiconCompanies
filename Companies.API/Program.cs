@@ -24,6 +24,7 @@ internal class Program
         builder.Services.AddHostedService<DataSeedService>();
         builder.Services.AddScoped<ICompanyRepsoitory, CompanyRepsoitory>();
         builder.Services.AddScoped<IPositionRepsoitory, PositionRepsoitory>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         var app = builder.Build();
 
