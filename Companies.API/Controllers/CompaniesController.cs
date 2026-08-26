@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 [ApiController]
 public class CompaniesController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+   // private readonly ApplicationDbContext _context;
     private readonly ICompanyRepsoitory companyRepsoitory;
     private readonly IPositionRepsoitory positionRepsoitory;
     private readonly IMapper _mapper;
 
     public CompaniesController(ApplicationDbContext context, ICompanyRepsoitory companyRepsoitory,IPositionRepsoitory positionRepsoitory, IMapper mapper)
     {
-        _context = context;
+      //  _context = context;
         this.companyRepsoitory = companyRepsoitory;
         this.positionRepsoitory = positionRepsoitory;
         _mapper = mapper;
@@ -75,8 +75,7 @@ public class CompaniesController : ControllerBase
 
 
         var company = _mapper.Map<Company>(dto);
-
-        _context.Companies.Add(company);
+        companyRepsoitory.Create(company);
         await _context.SaveChangesAsync();
 
         //ToDo fix position
@@ -94,7 +93,7 @@ public class CompaniesController : ControllerBase
 
         if (company == null) return NotFound();
 
-        _context.Companies.Remove(company);
+        companyRepsoitory.Delete(company);
         await _context.SaveChangesAsync();
 
         return NoContent();
