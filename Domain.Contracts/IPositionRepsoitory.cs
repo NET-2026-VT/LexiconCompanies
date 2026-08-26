@@ -1,4 +1,4 @@
-﻿namespace Companies.Infrastructure.Repositories;
+﻿namespace Domain.Contracts;
 
 public interface IPositionRepsoitory
 {

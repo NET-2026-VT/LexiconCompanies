@@ -1,4 +1,5 @@
 ﻿using Companies.Infrastructure.Data;
+using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 
