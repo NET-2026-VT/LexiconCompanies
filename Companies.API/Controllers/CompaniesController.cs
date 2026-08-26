@@ -18,24 +18,14 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(bool includeEmployees)
+    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany(bool includeEmployees)
     {
-        //var dto = includeEmployees ? await _mapper.ProjectTo<CompanyDto>(
-        //                                                _context.Companies.Include(c => c.Employees))
-        //                                               .ToListAsync() :
-
-        //                             await _mapper.ProjectTo<CompanyDto>(
-        //                                                _context.Companies)
-        //                                                .ToListAsync();
-
-        //var query = _context.Companies.Include(c => c.Address);
-
-        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(GetCompanies(includeEmployees));
+        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(await GetCompanies(includeEmployees));
 
         return Ok(dto2);
     }
 
-    private async Task<IEnumerable<Company>> GetCompanies(bool includeEmployees)
+    private async Task<IEnumerable<Company>> GetCompanies(bool includeEmployees = false)
     {
         var company = includeEmployees ? await _context.Companies
                                                            .Include(c => c.Address)
@@ -49,16 +39,25 @@ public class CompaniesController : ControllerBase
 
         return company;
     }
+    private async Task<Company?> GetCompany(Guid id, bool includeEmployees = false)
+    {
+        var company = includeEmployees ? await _context.Companies
+                                                           .Include(c => c.Address)
+                                                           .Include(c => c.Employees)
+                                                           .ThenInclude(e => e.Position) 
+                                                           .FirstOrDefaultAsync(c => c.Id == id) :
+
+                                       await _context.Companies
+                                                            .Include(c => c.Address)
+                                                            .FirstOrDefaultAsync(c => c.Id == id);
+
+        return company;
+    }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CompanyDto>> GetCompany(Guid id)
+    public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
-        var dto = await _context.Companies.Where(c => c.Id == id)
-                                          .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
-                                          .FirstOrDefaultAsync();
-
-        //var dto2 = await _mapper.ProjectTo<CompanyDto>(_context.Companies.Where(c => c.Id == id))
-        //                        .FirstOrDefaultAsync();
+        var dto = _mapper.Map<CompanyDto>(await GetCompany(id, includeEmployees));
 
         if (dto == null) return NotFound();
 
@@ -66,13 +65,11 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutCompany(Guid? id, UpdateCompanyDto dto)
+    public async Task<IActionResult> PutCompany(Guid id, UpdateCompanyDto dto)
     {
         if (id != dto.Id) return BadRequest();
 
-        var existingCompany = await _context.Companies
-                                            .Include(c => c.Address)
-                                            .FirstOrDefaultAsync(c => c.Id.Equals(id));
+        var existingCompany = await GetCompany(id);
 
         if (existingCompany == null) return NotFound();
 
@@ -91,10 +88,7 @@ public class CompaniesController : ControllerBase
         if (dto.Employees is not null && dto.Employees.Any())
         {
             var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
-            var validIds = await _context.Positions
-                                         .Where(p => positionIds.Contains(p.Id))
-                                         .Select(p => p.Id)
-                                         .ToListAsync();
+            IEnumerable<Guid> validIds = await GetValidPositionIds(positionIds);
 
             var invalidIds = positionIds.Except(validIds).ToList();
             if (invalidIds.Any())
@@ -107,20 +101,24 @@ public class CompaniesController : ControllerBase
         _context.Companies.Add(company);
         await _context.SaveChangesAsync();
 
-        // var created = _mapper.Map<CompanyDto>(company);
-        var created = await _context.Companies
-                                    .Where(c => c.Id == company.Id)
-                                    .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
-                                    .FirstAsync();
+        //ToDo fix position
+        var created = _mapper.Map<CompanyDto>(await GetCompany(company.Id));
 
         return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCompany(Guid? id)
+    private async Task<IEnumerable<Guid>> GetValidPositionIds(List<Guid> positionIds)
     {
-        var company = await _context.Companies
-                                .FirstOrDefaultAsync(c => c.Id.Equals(id));
+        return await _context.Positions
+                                     .Where(p => positionIds.Contains(p.Id))
+                                     .Select(p => p.Id)
+                                     .ToListAsync();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCompany(Guid id)
+    {
+        var company = await GetCompany(id);
 
         if (company == null) return NotFound();
 
@@ -134,9 +132,7 @@ public class CompaniesController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
     {
-        var company = await _context.Companies
-                                    .Include(c => c.Address)
-                                    .FirstOrDefaultAsync(c => c.Id == id);
+        var company = await GetCompany(id);
 
         if (company is null) return NotFound();
 
