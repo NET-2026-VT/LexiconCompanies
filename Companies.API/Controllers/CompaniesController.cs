@@ -28,14 +28,26 @@ public class CompaniesController : ControllerBase
         //                                                _context.Companies)
         //                                                .ToListAsync();
 
-        var query = _context.Companies.Include(c => c.Address);
+        //var query = _context.Companies.Include(c => c.Address);
 
-        var dto2 = includeEmployees ? _mapper.Map<IEnumerable<CompanyDto>>(await query.Include(c => c.Employees)
-                                                            .ThenInclude(e => e.Position)
-                                                            .ToListAsync()) :
+        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(GetCompanies(includeEmployees));
 
-                                     _mapper.Map<IEnumerable<CompanyDto>>(await query.ToListAsync());
         return Ok(dto2);
+    }
+
+    private async Task<IEnumerable<Company>> GetCompanies(bool includeEmployees)
+    {
+        var company = includeEmployees ? await _context.Companies
+                                                           .Include(c => c.Address)
+                                                           .Include(c => c.Employees)
+                                                           .ThenInclude(e => e.Position)
+                                                           .ToListAsync() :
+
+                                       await _context.Companies
+                                                            .Include(c => c.Address)
+                                                            .ToListAsync();
+
+        return company;
     }
 
     [HttpGet("{id}")]
