@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Companies.Infrastructure.Repositories;
 
-public class PositionRepsoitory
+public class PositionRepsoitory : IPositionRepsoitory
 {
     private readonly ApplicationDbContext _context;
 

@@ -1,5 +1,6 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Companies.Infrastructure.Repositories;
 using Companies.Shared.DTOs.CompanyDtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +10,22 @@ using Microsoft.EntityFrameworkCore;
 public class CompaniesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICompanyRepsoitory companyRepsoitory;
+    private readonly IPositionRepsoitory positionRepsoitory;
     private readonly IMapper _mapper;
 
-    public CompaniesController(ApplicationDbContext context, IMapper mapper)
+    public CompaniesController(ApplicationDbContext context, ICompanyRepsoitory companyRepsoitory,IPositionRepsoitory positionRepsoitory, IMapper mapper)
     {
         _context = context;
+        this.companyRepsoitory = companyRepsoitory;
+        this.positionRepsoitory = positionRepsoitory;
         _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany(bool includeEmployees)
     {
-        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(await GetCompanies(includeEmployees));
+        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(await companyRepsoitory.GetCompanies(includeEmployees));
 
         return Ok(dto2);
     }
@@ -30,7 +35,7 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
-        var dto = _mapper.Map<CompanyDto>(await GetCompany(id, includeEmployees));
+        var dto = _mapper.Map<CompanyDto>(await companyRepsoitory.GetCompany(id, includeEmployees));
 
         if (dto == null) return NotFound();
 
@@ -42,7 +47,7 @@ public class CompaniesController : ControllerBase
     {
         if (id != dto.Id) return BadRequest();
 
-        var existingCompany = await GetCompany(id);
+        var existingCompany = await companyRepsoitory.GetCompany(id);
 
         if (existingCompany == null) return NotFound();
 
@@ -61,7 +66,7 @@ public class CompaniesController : ControllerBase
         if (dto.Employees is not null && dto.Employees.Any())
         {
             var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
-            IEnumerable<Guid> validIds = await GetValidPositionIds(positionIds);
+            IEnumerable<Guid> validIds = await positionRepsoitory.GetValidPositionIds(positionIds);
 
             var invalidIds = positionIds.Except(validIds).ToList();
             if (invalidIds.Any())
@@ -75,9 +80,9 @@ public class CompaniesController : ControllerBase
         await _context.SaveChangesAsync();
 
         //ToDo fix position
-        var created = _mapper.Map<CompanyDto>(await GetCompany(company.Id));
+        var created = _mapper.Map<CompanyDto>(await companyRepsoitory.GetCompany(company.Id));
 
-        return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
+        return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
     }
 
    
@@ -85,7 +90,7 @@ public class CompaniesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCompany(Guid id)
     {
-        var company = await GetCompany(id);
+        var company = await companyRepsoitory.GetCompany(id);
 
         if (company == null) return NotFound();
 
@@ -99,7 +104,7 @@ public class CompaniesController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
     {
-        var company = await GetCompany(id);
+        var company = await companyRepsoitory.GetCompany(id);
 
         if (company is null) return NotFound();
 

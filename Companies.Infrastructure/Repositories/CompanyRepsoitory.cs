@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Companies.Infrastructure.Repositories;
 
-public class CompanyRepsoitory
+public class CompanyRepsoitory : ICompanyRepsoitory
 {
     private readonly ApplicationDbContext _context;
 
@@ -30,7 +30,7 @@ public class CompanyRepsoitory
 
     private IQueryable<Company> GetCompanyQuery(bool includeEmployees)
     {
-        return  includeEmployees ? _context.Companies
+        return includeEmployees ? _context.Companies
                                     .Include(c => c.Address)
                                     .Include(c => c.Employees)
                                     .ThenInclude(e => e.Position) :

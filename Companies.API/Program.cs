@@ -1,4 +1,5 @@
 using Companies.API.Services;
+using Companies.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 internal class Program
 {
@@ -9,11 +10,8 @@ internal class Program
         var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-        builder.Services.AddControllers(opt =>
-        {
-            opt.ReturnHttpNotAcceptable = true;
-        })
-        .AddXmlDataContractSerializerFormatters();
+        builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
+        //.AddXmlDataContractSerializerFormatters();
         // .AddNewtonsoftJson();
         //    .AddJsonOptions(opt =>
         //{
@@ -24,6 +22,8 @@ internal class Program
         builder.Services.AddAutoMapper(cfg => { }, typeof(MapperProfile));
 
         builder.Services.AddHostedService<DataSeedService>();
+        builder.Services.AddScoped<ICompanyRepsoitory, CompanyRepsoitory>();
+        builder.Services.AddScoped<IPositionRepsoitory, PositionRepsoitory>();
 
         var app = builder.Build();
 
