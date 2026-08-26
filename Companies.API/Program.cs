@@ -1,9 +1,6 @@
 using Companies.API.Data;
-using Companies.API.Middleware;
-using Companies.API.Migrations;
 using Companies.API.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 internal class Program
 {
     private static void Main(string[] args)
@@ -18,12 +15,12 @@ internal class Program
             opt.ReturnHttpNotAcceptable = true;
         })
         .AddXmlDataContractSerializerFormatters();
-                       // .AddNewtonsoftJson();
+        // .AddNewtonsoftJson();
         //    .AddJsonOptions(opt =>
         //{
         //    opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         //});
- 
+
         builder.Services.AddSwaggerGen();
         builder.Services.AddAutoMapper(cfg => { }, typeof(MapperProfile));
 
@@ -34,9 +31,9 @@ internal class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-           app.UseSwagger();
+            app.UseSwagger();
 
-           app.UseSwaggerUI(); 
+            app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();

@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Companies.API.Models.Entities;
+﻿namespace Domain.Models.Entities;
 
 public class Employee
 {
     public Guid Id { get; set; }
 
     public required string Name { get; set; }
-    public  int Age { get; set; }
+    public int Age { get; set; }
 
     //FK
     public Guid CompanyId { get; set; }

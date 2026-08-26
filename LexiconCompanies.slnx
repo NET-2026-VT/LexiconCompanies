@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="Companies.API/Companies.API.csproj" />
+    <Project Path="Domain.Models/Domain.Models.csproj" Id="0dec5142-e850-490d-832d-bb6344f48791" />
   </Folder>
 </Solution>

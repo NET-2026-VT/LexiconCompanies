@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using Companies.API.Data;
-using Companies.API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Companies.API.Services;
@@ -31,9 +30,9 @@ internal class DataSeedService : IHostedService
 
         try
         {
-             _positions =
-                [
-                  new Position {Name = "Developer"},
+            _positions =
+               [
+                 new Position {Name = "Developer"},
                   new Position {Name = "Tester"},
                   new Position {Name = "Admin"},
                 ];

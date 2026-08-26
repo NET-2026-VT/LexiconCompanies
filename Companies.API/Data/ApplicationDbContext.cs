@@ -1,4 +1,3 @@
-using Companies.API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Companies.API.Data;

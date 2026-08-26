@@ -1,4 +1,4 @@
-﻿namespace Companies.API.Models.Entities;
+﻿namespace Domain.Models.Entities;
 
 public class Address
 {

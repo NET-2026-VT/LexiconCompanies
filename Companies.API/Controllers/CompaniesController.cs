@@ -2,10 +2,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Companies.API.Data;
 using Companies.API.Models.DTOs.CompanyDtos;
-using Companies.API.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 [Route("api/companies")]
 [ApiController]
@@ -61,11 +59,11 @@ public class CompaniesController : ControllerBase
     {
         if (id != dto.Id) return BadRequest();
 
-        var existingCompany =  await _context.Companies
+        var existingCompany = await _context.Companies
                                             .Include(c => c.Address)
-                                            .FirstOrDefaultAsync(c => c.Id.Equals(id));   
-        
-        if(existingCompany == null) return NotFound();
+                                            .FirstOrDefaultAsync(c => c.Id.Equals(id));
+
+        if (existingCompany == null) return NotFound();
 
         _mapper.Map(dto, existingCompany);
 

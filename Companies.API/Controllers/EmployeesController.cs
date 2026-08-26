@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Companies.API.Data;
-using Companies.API.Migrations;
 using Companies.API.Models.DTOs.EmployeeDtos;
-using Companies.API.Models.Entities;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -103,7 +99,7 @@ public class EmployeesController : ControllerBase
 
         var employeeToPatchDto = _mapper.Map<UpdateEmployeeDto>(employeeToPatch);
 
-        patchDocument.ApplyTo(employeeToPatchDto, 
+        patchDocument.ApplyTo(employeeToPatchDto,
             e => ModelState.AddModelError(e.Operation.path ?? "JsonPatch", e.ErrorMessage)); // Not valid patch-operations
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -115,7 +111,7 @@ public class EmployeesController : ControllerBase
 
 
         return Ok(_mapper.Map<EmployeeDto>(employeeToPatch)); //just for demo
-       // return NoContent();
+                                                              // return NoContent();
     }
 
     [HttpDelete("{id}")]
