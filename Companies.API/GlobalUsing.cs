@@ -1,1 +1,2 @@
-﻿global using Domain.Models.Entities;
+﻿global using Companies.Infrastructure.Data;
+global using Domain.Models.Entities;

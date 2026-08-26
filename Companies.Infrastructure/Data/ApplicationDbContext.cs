@@ -1,6 +1,7 @@
+using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Companies.API.Data;
+namespace Companies.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

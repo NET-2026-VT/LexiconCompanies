@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Companies.API.Models.DTOs.CompanyDtos;
-using Companies.API.Models.DTOs.EmployeeDtos;
+using Domain.Models.Entities;
 
-namespace Companies.API.Data;
+namespace Companies.Infrastructure.Data;
 
 public class MapperProfile : Profile
 {

@@ -1,4 +1,3 @@
-using Companies.API.Data;
 using Companies.API.Services;
 using Microsoft.EntityFrameworkCore;
 internal class Program
