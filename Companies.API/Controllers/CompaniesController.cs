@@ -25,34 +25,7 @@ public class CompaniesController : ControllerBase
         return Ok(dto2);
     }
 
-    private async Task<IEnumerable<Company>> GetCompanies(bool includeEmployees = false)
-    {
-        var company = includeEmployees ? await _context.Companies
-                                                           .Include(c => c.Address)
-                                                           .Include(c => c.Employees)
-                                                           .ThenInclude(e => e.Position)
-                                                           .ToListAsync() :
-
-                                       await _context.Companies
-                                                            .Include(c => c.Address)
-                                                            .ToListAsync();
-
-        return company;
-    }
-    private async Task<Company?> GetCompany(Guid id, bool includeEmployees = false)
-    {
-        var company = includeEmployees ? await _context.Companies
-                                                           .Include(c => c.Address)
-                                                           .Include(c => c.Employees)
-                                                           .ThenInclude(e => e.Position) 
-                                                           .FirstOrDefaultAsync(c => c.Id == id) :
-
-                                       await _context.Companies
-                                                            .Include(c => c.Address)
-                                                            .FirstOrDefaultAsync(c => c.Id == id);
-
-        return company;
-    }
+  
 
     [HttpGet("{id}")]
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
@@ -107,13 +80,7 @@ public class CompaniesController : ControllerBase
         return CreatedAtAction(nameof(GetCompany), new { id = created.Id }, created);
     }
 
-    private async Task<IEnumerable<Guid>> GetValidPositionIds(List<Guid> positionIds)
-    {
-        return await _context.Positions
-                                     .Where(p => positionIds.Contains(p.Id))
-                                     .Select(p => p.Id)
-                                     .ToListAsync();
-    }
+   
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCompany(Guid id)
