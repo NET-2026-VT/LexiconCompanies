@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="Companies.API/Companies.API.csproj" />
     <Project Path="Companies.Infrastructure/Companies.Infrastructure.csproj" Id="d1745ff1-344f-469f-93f5-95ea9d4956d8" />
+    <Project Path="Companies.Shared/Companies.Shared.csproj" Id="ca774471-fcf8-4723-b080-0867c06280aa" />
     <Project Path="Domain.Models/Domain.Models.csproj" Id="0dec5142-e850-490d-832d-bb6344f48791" />
   </Folder>
 </Solution>

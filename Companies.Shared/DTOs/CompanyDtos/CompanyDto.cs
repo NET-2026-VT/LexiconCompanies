@@ -1,6 +1,6 @@
-﻿using Companies.API.Models.DTOs.EmployeeDtos;
+﻿using Companies.Shared.DTOs.EmployeeDtos;
 
-namespace Companies.API.Models.DTOs.CompanyDtos;
+namespace Companies.Shared.DTOs.CompanyDtos;
 
 public record CompanyDto
 {

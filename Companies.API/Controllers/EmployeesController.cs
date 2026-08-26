@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Companies.API.Models.DTOs.EmployeeDtos;
+using Companies.Shared.DTOs.EmployeeDtos;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

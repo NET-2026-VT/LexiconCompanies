@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Companies.Shared.DTOs.CompanyDtos;
+using Companies.Shared.DTOs.EmployeeDtos;
 using Domain.Models.Entities;
 
 namespace Companies.Infrastructure.Data;
