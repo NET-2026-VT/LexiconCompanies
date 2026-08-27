@@ -1,6 +1,4 @@
-﻿using Domain.Contracts;
-
-namespace Service.Contracts;
+﻿namespace Service.Contracts;
 
 public interface IServiceManager
 {

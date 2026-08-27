@@ -2,9 +2,6 @@
 using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Companies.Infrastructure.Repositories;
 
@@ -29,11 +26,11 @@ public class CompanyRepsoitory : RepositoryBase<Company>, ICompanyRepsoitory
         return await company.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-  
+
 
     private IQueryable<Company> GetCompanyQuery(bool includeEmployees, bool trackChanges)
     {
-        return includeEmployees ?  FindAll(trackChanges)
+        return includeEmployees ? FindAll(trackChanges)
                                     .Include(c => c.Address)
                                     .Include(c => c.Employees)
                                     .ThenInclude(e => e.Position) :

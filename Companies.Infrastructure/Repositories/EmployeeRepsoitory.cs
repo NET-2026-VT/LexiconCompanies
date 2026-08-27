@@ -1,5 +1,4 @@
 ﻿using Companies.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Companies.Infrastructure.Repositories;
 

@@ -9,4 +9,3 @@ public static class QueryableExtensions
         return trackChanges ? query : query.AsNoTracking();
     }
 }
- 

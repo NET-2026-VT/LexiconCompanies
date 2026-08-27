@@ -1,11 +1,7 @@
 ﻿using Companies.Infrastructure.Data;
 using Domain.Contracts;
-using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Companies.Infrastructure.Repositories;
 

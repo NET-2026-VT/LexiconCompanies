@@ -1,6 +1,5 @@
 using Companies.API.Extensions;
 using Companies.API.Services;
-using Companies.Infrastructure.Repositories;
 using Companies.Presentation;
 using Microsoft.EntityFrameworkCore;
 internal class Program
@@ -27,7 +26,7 @@ internal class Program
         builder.Services.AddHostedService<DataSeedService>();
         builder.Services.AddRepositories();
         builder.Services.AddServiceLayer();
-       
+
 
         var app = builder.Build();
 

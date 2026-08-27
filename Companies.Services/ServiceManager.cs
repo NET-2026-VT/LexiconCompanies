@@ -1,8 +1,4 @@
-﻿using Domain.Contracts;
-using Service.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Service.Contracts;
 
 namespace Companies.Services;
 

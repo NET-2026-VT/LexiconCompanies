@@ -38,11 +38,10 @@ public class CompanyService : ICompanyService
 
         if (existingCompany == null) return null!; //ToDo: Fix! //return NotFound();
 
-            _mapper.Map(dto, existingCompany);
+        _mapper.Map(dto, existingCompany);
 
         await _uow.CompleteAsync();
 
         return _mapper.Map<CompanyDto>(existingCompany); //For Demo
     }
 }
-    

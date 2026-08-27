@@ -1,8 +1,5 @@
 ﻿using Companies.Infrastructure.Data;
 using Domain.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Companies.Infrastructure.Repositories;
 
