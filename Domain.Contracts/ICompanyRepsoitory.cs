@@ -2,8 +2,8 @@
 
 namespace Domain.Contracts;
 
-public interface ICompanyRepsoitory
+public interface ICompanyRepsoitory : IRepositoryBase<Company>
 {
-    Task<IEnumerable<Company>> GetCompanies(bool includeEmployees = false);
-    Task<Company?> GetCompany(Guid id, bool includeEmployees = false);
+    Task<IEnumerable<Company>> GetCompanies(bool includeEmployees = false, bool trackChanges = false);
+    Task<Company?> GetCompany(Guid id, bool includeEmployees = false, bool trackChanges = false);
 }

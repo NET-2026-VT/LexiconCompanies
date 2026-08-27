@@ -38,7 +38,7 @@ public class CompaniesController : ControllerBase
     {
         if (id != dto.Id) return BadRequest();
 
-        var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id);
+        var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
 
         if (existingCompany == null) return NotFound();
 
@@ -83,7 +83,6 @@ public class CompaniesController : ControllerBase
         var company = await _uow.CompanyRepsoitory.GetCompany(id);
 
         if (company == null) return NotFound();
-
         _uow.CompanyRepsoitory.Delete(company);
         await _uow.CompleteAsync();
 
@@ -94,7 +93,7 @@ public class CompaniesController : ControllerBase
     [HttpPatch("{id}")]
     public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
     {
-        var company = await _uow.CompanyRepsoitory.GetCompany(id);
+        var company = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
 
         if (company is null) return NotFound();
 
