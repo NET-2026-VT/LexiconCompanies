@@ -16,17 +16,15 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany(bool includeEmployees)
     {
-        var dto2 = _mapper.Map<IEnumerable<CompanyDto>>(await _uow.CompanyRepsoitory.GetCompanies(includeEmployees));
+        var dto = await _serviceManager.CompanyService.GetCompaniesAsync(includeEmployees);
 
-        return Ok(dto2);
+        return Ok(dto);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
-        var dto = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(id, includeEmployees));
-
-        if (dto == null) return NotFound();
+        var dto = await _serviceManager.CompanyService.GetCompanyAsync(id, includeEmployees);
 
         return dto;
     }
