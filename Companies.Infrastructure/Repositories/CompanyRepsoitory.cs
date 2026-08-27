@@ -29,8 +29,7 @@ public class CompanyRepsoitory : ICompanyRepsoitory
         return await company.FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public void Create(Company company) => _context.Companies.Add(company);
-    public void Delete(Company company) => _context.Companies.Remove(company);
+  
 
     private IQueryable<Company> GetCompanyQuery(bool includeEmployees)
     {
