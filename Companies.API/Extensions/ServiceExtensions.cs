@@ -13,4 +13,11 @@ public static class ServiceExtensions
         services.AddScoped(provider => new Lazy<ICompanyRepsoitory>(() => provider.GetRequiredService<ICompanyRepsoitory>()));
         services.AddLazy<IPositionRepsoitory>();
     }
+
+    public static void AddServiceLayer(this IServiceCollection services)
+    {
+        services.AddScoped<IServiceManager, ServiceManager>();
+        services.AddScoped<ICompanyService, CompanyService>();
+        services.AddLazy<ICompanyService>();
+    }
 }

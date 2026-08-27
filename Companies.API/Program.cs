@@ -24,6 +24,7 @@ internal class Program
 
         builder.Services.AddHostedService<DataSeedService>();
         builder.Services.AddRepositories();
+        builder.Services.AddServiceLayer();
        
 
         var app = builder.Build();
