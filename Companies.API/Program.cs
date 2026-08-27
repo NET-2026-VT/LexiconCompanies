@@ -1,3 +1,4 @@
+using Companies.API.Extensions;
 using Companies.API.Services;
 using Companies.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,8 @@ internal class Program
         builder.Services.AddAutoMapper(cfg => { }, typeof(MapperProfile));
 
         builder.Services.AddHostedService<DataSeedService>();
-        builder.Services.AddScoped<ICompanyRepsoitory, CompanyRepsoitory>();
-        builder.Services.AddScoped<IPositionRepsoitory, PositionRepsoitory>();
-        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddRepositories();
+       
 
         var app = builder.Build();
 

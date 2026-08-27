@@ -9,14 +9,16 @@ namespace Companies.Infrastructure.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
-    public ICompanyRepsoitory CompanyRepsoitory { get; }
-    public IPositionRepsoitory PositionRepsoitory { get; }
+    private Lazy<ICompanyRepsoitory> _companyRepsoitory;
+    private Lazy<IPositionRepsoitory> _positionRepsoitory;
+    public ICompanyRepsoitory CompanyRepsoitory => _companyRepsoitory.Value;
+    public IPositionRepsoitory PositionRepsoitory => _positionRepsoitory.Value;
 
-    public UnitOfWork(ApplicationDbContext context, ICompanyRepsoitory companyRepsoitory, IPositionRepsoitory positionRepsoitory)
+    public UnitOfWork(ApplicationDbContext context, Lazy<ICompanyRepsoitory> companyRepsoitory, Lazy<IPositionRepsoitory> positionRepsoitory)
     {
         _context = context;
-        this.CompanyRepsoitory = companyRepsoitory;
-        PositionRepsoitory = positionRepsoitory;
+        _companyRepsoitory = companyRepsoitory;
+        _positionRepsoitory = positionRepsoitory;
     }
 
     public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();
