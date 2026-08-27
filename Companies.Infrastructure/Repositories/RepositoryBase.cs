@@ -20,14 +20,20 @@ public abstract class RepositoryBase<T> where T : class
     }
 
     public IQueryable<T> FindAll(bool trackChanges = false) => 
-                  trackChanges ? DbSet :
-                                 DbSet.AsNoTracking();
+                      DbSet.WithTracking(trackChanges);
 
     public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false) =>
-                   trackChanges ?   DbSet.Where(expression) :
-                                    DbSet.Where(expression).AsNoTracking();
+                     DbSet.WithTracking(trackChanges).Where(expression); 
 
     public void Create(T entity) => _context.Add(entity);
     public void Delete(T entity) => _context.Remove(entity);
+}
+
+public static class QueryableExtensions
+{
+    public static IQueryable<T> WithTracking<T>(this IQueryable<T> query, bool trackChanges) where T : class
+    {
+        return trackChanges ? query : query.AsNoTracking();
+    }
 }
  
