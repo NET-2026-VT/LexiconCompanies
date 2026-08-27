@@ -1,6 +1,7 @@
 using Companies.API.Extensions;
 using Companies.API.Services;
 using Companies.Infrastructure.Repositories;
+using Companies.Presentation;
 using Microsoft.EntityFrameworkCore;
 internal class Program
 {
@@ -11,7 +12,8 @@ internal class Program
         var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-        builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
+        builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+                        .AddApplicationPart(typeof(AssemblyReference).Assembly);
         //.AddXmlDataContractSerializerFormatters();
         // .AddNewtonsoftJson();
         //    .AddJsonOptions(opt =>

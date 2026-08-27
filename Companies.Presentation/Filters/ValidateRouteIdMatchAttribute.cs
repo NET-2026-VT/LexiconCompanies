@@ -1,10 +1,10 @@
 ﻿using Companies.Shared.DTOs.CompanyDtos;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Companies.API.Filters;
+namespace Companies.Presentation.Filters;
 
+[AttributeUsage(AttributeTargets.Method)]
 public class ValidateRouteIdMatchAttribute : Attribute, IActionFilter
 {
 
@@ -20,5 +20,5 @@ public class ValidateRouteIdMatchAttribute : Attribute, IActionFilter
     }
 
     public void OnActionExecuted(ActionExecutedContext context) { }
-   
+
 }

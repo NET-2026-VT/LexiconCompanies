@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="Companies.API/Companies.API.csproj" />
     <Project Path="Companies.Infrastructure/Companies.Infrastructure.csproj" Id="d1745ff1-344f-469f-93f5-95ea9d4956d8" />
+    <Project Path="Companies.Presentation/Companies.Presentation.csproj" Id="c6610857-6d45-406f-8111-9845ebc750c5" />
     <Project Path="Companies.Services/Companies.Services.csproj" Id="38a95051-5742-4eca-b666-1effaec11a2c" />
     <Project Path="Companies.Shared/Companies.Shared.csproj" Id="ca774471-fcf8-4723-b080-0867c06280aa" />
     <Project Path="Domain.Contracts/Domain.Contracts.csproj" Id="52e72200-02ca-4b1b-a2d0-0e62b7aa8057" />

@@ -1,7 +1,8 @@
 using AutoMapper;
-using Companies.API.Filters;
+using Companies.Presentation.Filters;
 using Companies.Shared.DTOs.CompanyDtos;
 using Microsoft.AspNetCore.Mvc;
+using Service.Contracts;
 
 [Route("api/companies")]
 [ApiController]
