@@ -28,12 +28,4 @@ public abstract class RepositoryBase<T> where T : class
     public void Create(T entity) => _context.Add(entity);
     public void Delete(T entity) => _context.Remove(entity);
 }
-
-public static class QueryableExtensions
-{
-    public static IQueryable<T> WithTracking<T>(this IQueryable<T> query, bool trackChanges) where T : class
-    {
-        return trackChanges ? query : query.AsNoTracking();
-    }
-}
  
