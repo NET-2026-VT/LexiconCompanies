@@ -8,14 +8,11 @@ namespace Companies.Services;
 
 public class ServiceManager : IServiceManager
 {
-    private readonly Lazy<ICompanyRepsoitory> _companyRepsoitory;
-    public ICompanyRepsoitory CompanyRepsoitory => _companyRepsoitory.Value;
+    private readonly Lazy<ICompanyService> _companyService;
+    public ICompanyService CompanyService => _companyService.Value;
 
-    public IUnitOfWork UoW { get; }
-
-    public ServiceManager(IUnitOfWork uow, Lazy<ICompanyRepsoitory> companyRepsoitory)
+    public ServiceManager(Lazy<ICompanyService> companyService)
     {
-        UoW = uow;
-        _companyRepsoitory = companyRepsoitory;
+        _companyService = companyService;
     }
 }

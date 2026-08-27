@@ -6,13 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class CompaniesController : ControllerBase
 {
-    private readonly IUnitOfWork _uow;
-    private readonly IMapper _mapper;
+    private readonly IServiceManager _serviceManager;
 
-    public CompaniesController(IUnitOfWork uow, IMapper mapper)
+    public CompaniesController(IServiceManager serviceManager)
     {
-        _uow = uow;
-        _mapper = mapper;
+        _serviceManager = serviceManager;
     }
 
     [HttpGet]
@@ -33,79 +31,79 @@ public class CompaniesController : ControllerBase
         return dto;
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutCompany(Guid id, UpdateCompanyDto dto)
-    {
-        if (id != dto.Id) return BadRequest();
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> PutCompany(Guid id, UpdateCompanyDto dto)
+    //{
+    //    if (id != dto.Id) return BadRequest();
 
-        var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
+    //    var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
 
-        if (existingCompany == null) return NotFound();
+    //    if (existingCompany == null) return NotFound();
 
-        _mapper.Map(dto, existingCompany);
+    //    _mapper.Map(dto, existingCompany);
 
-        await _uow.CompleteAsync();
+    //    await _uow.CompleteAsync();
 
-        return Ok(_mapper.Map<CompanyDto>(existingCompany)); //For Demo
-        //return NoContent();
-    }
-
-
-    [HttpPost]
-    public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto dto)
-    {
-        if (dto.Employees is not null && dto.Employees.Any())
-        {
-            var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
-            IEnumerable<Guid> validIds = await _uow.PositionRepsoitory.GetValidPositionIds(positionIds);
-
-            var invalidIds = positionIds.Except(validIds).ToList();
-            if (invalidIds.Any())
-                return NotFound($"Position(s) not found: {string.Join(", ", invalidIds)}");
-        }
+    //    return Ok(_mapper.Map<CompanyDto>(existingCompany)); //For Demo
+    //    //return NoContent();
+    //}
 
 
-        var company = _mapper.Map<Company>(dto);
-        _uow.CompanyRepsoitory.Create(company);
-        await _uow.CompleteAsync();
+    //[HttpPost]
+    //public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto dto)
+    //{
+    //    if (dto.Employees is not null && dto.Employees.Any())
+    //    {
+    //        var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
+    //        IEnumerable<Guid> validIds = await _uow.PositionRepsoitory.GetValidPositionIds(positionIds);
 
-        //ToDo fix position
-        var created = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id));
-
-        return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
-    }
-
-
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteCompany(Guid id)
-    {
-        var company = await _uow.CompanyRepsoitory.GetCompany(id);
-
-        if (company == null) return NotFound();
-        _uow.CompanyRepsoitory.Delete(company);
-        await _uow.CompleteAsync();
-
-        return NoContent();
-    }
+    //        var invalidIds = positionIds.Except(validIds).ToList();
+    //        if (invalidIds.Any())
+    //            return NotFound($"Position(s) not found: {string.Join(", ", invalidIds)}");
+    //    }
 
 
-    [HttpPatch("{id}")]
-    public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
-    {
-        var company = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
+    //    var company = _mapper.Map<Company>(dto);
+    //    _uow.CompanyRepsoitory.Create(company);
+    //    await _uow.CompleteAsync();
 
-        if (company is null) return NotFound();
+    //    //ToDo fix position
+    //    var created = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id));
 
-        // Uppdatera bara de fält som faktiskt skickades med (inte null)
-        if (dto.Name is not null) company.Name = dto.Name;
-        if (dto.StreetAddress is not null) company.Address.StreetAddress = dto.StreetAddress;
-        if (dto.City is not null) company.Address.City = dto.City;
-        if (dto.Country is not null) company.Address.Country = dto.Country;
+    //    return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
+    //}
 
-        await _uow.CompleteAsync();
 
-        return Ok(_mapper.Map<CompanyDto>(company));
-    }
+
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> DeleteCompany(Guid id)
+    //{
+    //    var company = await _uow.CompanyRepsoitory.GetCompany(id);
+
+    //    if (company == null) return NotFound();
+    //    _uow.CompanyRepsoitory.Delete(company);
+    //    await _uow.CompleteAsync();
+
+    //    return NoContent();
+    //}
+
+
+    //[HttpPatch("{id}")]
+    //public async Task<ActionResult<CompanyDto>> PatchCompany(Guid id, PatchCompanyDto dto)
+    //{
+    //    var company = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
+
+    //    if (company is null) return NotFound();
+
+    //    // Uppdatera bara de fält som faktiskt skickades med (inte null)
+    //    if (dto.Name is not null) company.Name = dto.Name;
+    //    if (dto.StreetAddress is not null) company.Address.StreetAddress = dto.StreetAddress;
+    //    if (dto.City is not null) company.Address.City = dto.City;
+    //    if (dto.Country is not null) company.Address.Country = dto.Country;
+
+    //    await _uow.CompleteAsync();
+
+    //    return Ok(_mapper.Map<CompanyDto>(company));
+    //}
 
 }
