@@ -31,4 +31,18 @@ public class CompanyService : ICompanyService
 
         return dto;
     }
+
+    public async Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto)
+    {
+        var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
+
+        if (existingCompany == null) return null!; //ToDo: Fix! //return NotFound();
+
+            _mapper.Map(dto, existingCompany);
+
+        await _uow.CompleteAsync();
+
+        return _mapper.Map<CompanyDto>(existingCompany); //For Demo
+    }
 }
+    

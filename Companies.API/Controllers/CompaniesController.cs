@@ -29,22 +29,15 @@ public class CompaniesController : ControllerBase
         return dto;
     }
 
-    //[HttpPut("{id}")]
-    //public async Task<IActionResult> PutCompany(Guid id, UpdateCompanyDto dto)
-    //{
-    //    if (id != dto.Id) return BadRequest();
+    [HttpPut("{id}")]
+    public async Task<ActionResult<CompanyDto>> PutCompany(Guid id, UpdateCompanyDto dto)
+    {
+        if (id != dto.Id) return BadRequest();
 
-    //    var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
-
-    //    if (existingCompany == null) return NotFound();
-
-    //    _mapper.Map(dto, existingCompany);
-
-    //    await _uow.CompleteAsync();
-
-    //    return Ok(_mapper.Map<CompanyDto>(existingCompany)); //For Demo
-    //    //return NoContent();
-    //}
+        var updatedCompany = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
+        return updatedCompany; //For Demo
+        //return NoContent();
+    }
 
 
     //[HttpPost]
