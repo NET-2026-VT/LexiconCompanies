@@ -1,4 +1,5 @@
 using AutoMapper;
+using Companies.API.Filters;
 using Companies.Shared.DTOs.CompanyDtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,10 +31,11 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [ValidateRouteIdMatch]
     public async Task<ActionResult<CompanyDto>> PutCompany(Guid id, UpdateCompanyDto dto)
     {
-        if (id != dto.Id) return BadRequest();
-
+       // if (id != dto.Id) return BadRequest(); 
+        
         var updatedCompany = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
         return updatedCompany; //For Demo
         //return NoContent();
