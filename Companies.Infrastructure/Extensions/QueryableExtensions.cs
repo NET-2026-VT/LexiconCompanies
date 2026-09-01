@@ -8,7 +8,7 @@ public static class QueryableExtensions
 {
     public static async Task<PagedList<T>> ToPagedListAsync<T>(
         this IQueryable<T> query,
-        CompanyQueryParameters parameters) where T : class
+        QueryParameters parameters) where T : class
     {
         var totalCount = await query.CountAsync();
         var items = await query
