@@ -31,7 +31,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ValidateRouteIdMatch]
+    [ValidateRouteIdMatch(typeof(UpdateCompanyDto))]
     public async Task<ActionResult<CompanyDto>> PutCompany(Guid id, UpdateCompanyDto dto)
     {
         // if (id != dto.Id) return BadRequest(); 
