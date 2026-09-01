@@ -1,4 +1,5 @@
 ﻿using Companies.Infrastructure.Data;
+using Companies.Shared.Paging;
 using Domain.Contracts;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +15,13 @@ public class CompanyRepsoitory : RepositoryBase<Company>, ICompanyRepsoitory
         _context = context;
     }
 
-    public async Task<IEnumerable<Company>> GetCompanies(bool includeEmployees = false, bool trackChanges = false)
+    public async Task<IEnumerable<Company>> GetCompanies(CompanyQueryParameters query, bool trackChanges = false)
     {
-        var company = GetCompanyQuery(includeEmployees, trackChanges);
+        var company = GetCompanyQuery(query.IncludeEmployees, trackChanges);
+
+        //add pagination to query.
+
+
         return await company.ToListAsync();
     }
 

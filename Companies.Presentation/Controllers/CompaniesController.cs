@@ -1,5 +1,6 @@
 using Companies.Presentation.Filters;
 using Companies.Shared.DTOs.CompanyDtos;
+using Companies.Shared.Paging;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 
@@ -15,9 +16,9 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany(bool includeEmployees)
+    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany([FromQuery]CompanyQueryParameters query)
     {
-        var dto = await _serviceManager.CompanyService.GetCompaniesAsync(includeEmployees);
+        var dto = await _serviceManager.CompanyService.GetCompaniesAsync(query);
 
         return Ok(dto);
     }
