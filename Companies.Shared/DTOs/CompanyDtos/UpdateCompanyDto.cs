@@ -1,6 +1,6 @@
 ﻿namespace Companies.Shared.DTOs.CompanyDtos;
 
-public record UpdateCompanyDto : CompanyManipulationDto
+public record UpdateCompanyDto : CompanyManipulationDto, IHasId
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
 }
