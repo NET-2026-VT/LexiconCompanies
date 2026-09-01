@@ -1,4 +1,6 @@
 ﻿using Companies.Infrastructure.Data;
+using Companies.Infrastructure.Extensions;
+using Companies.Infrastructure.Paging;
 using Companies.Shared.Paging;
 using Domain.Contracts;
 using Domain.Models.Entities;
@@ -15,14 +17,17 @@ public class CompanyRepsoitory : RepositoryBase<Company>, ICompanyRepsoitory
         _context = context;
     }
 
-    public async Task<IEnumerable<Company>> GetCompanies(CompanyQueryParameters query, bool trackChanges = false)
+    public async Task<IPagedList<Company>> GetCompanies(CompanyQueryParameters query, bool trackChanges = false)
     {
-        var company = GetCompanyQuery(query.IncludeEmployees, trackChanges);
+        var companies = GetCompanyQuery(query.IncludeEmployees, trackChanges);
 
         //add pagination to query.
+        var res = await companies
+                          .OrderBy(c => c.Id)
+                          .ToPagedListAsync(query);
 
+        return res;
 
-        return await company.ToListAsync();
     }
 
     public async Task<Company?> GetCompany(Guid id, bool includeEmployees = false, bool trackChanges = false)

@@ -1,4 +1,5 @@
 ﻿using Companies.Infrastructure.Data;
+using Companies.Infrastructure.Extensions;
 using Domain.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
