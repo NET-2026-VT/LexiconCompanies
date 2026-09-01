@@ -16,7 +16,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAllCompany([FromQuery]CompanyQueryParameters query)
+    public async Task<ActionResult<PagedResponse<CompanyDto>>> GetAllCompany([FromQuery]CompanyQueryParameters query)
     {
         var dto = await _serviceManager.CompanyService.GetCompaniesAsync(query);
 
