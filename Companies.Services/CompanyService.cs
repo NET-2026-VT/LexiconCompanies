@@ -18,11 +18,13 @@ public class CompanyService : ICompanyService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<CompanyDto>> GetCompaniesAsync(CompanyQueryParameters query, bool trackChanges = false)
+    public async Task<PagedResponse<CompanyDto>> GetCompaniesAsync(CompanyQueryParameters query, bool trackChanges = false)
     {
-        var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(await _uow.CompanyRepsoitory.GetCompanies(query, trackChanges));
+        IPagedList<Company> pagedList = await _uow.CompanyRepsoitory.GetCompanies(query, trackChanges);
+        var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(pagedList.Items);
 
-        return companyDtos;
+        return new(companyDtos, query.PageNumber, query.PageSize, pagedList.TotalCount);
+
     }
 
     public async Task<CompanyDto> GetCompanyAsync(Guid id, bool includeEmployees, bool trackChanges = false)

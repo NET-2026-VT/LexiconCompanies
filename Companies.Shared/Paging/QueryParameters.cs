@@ -2,7 +2,7 @@
 
 namespace Companies.Shared.Paging;
 
-public class QueryParameters
+public abstract class QueryParameters
 {
     private const int _maxPageSize = 100;
 
