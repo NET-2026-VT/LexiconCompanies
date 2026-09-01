@@ -48,6 +48,7 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto)
     {
+        //Validate
         var company = _mapper.Map<Company>(dto);
         _uow.CompanyRepsoitory.Create(company);
         await _uow.CompleteAsync();
