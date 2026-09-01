@@ -31,7 +31,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [ValidateRouteIdMatch(typeof(UpdateCompanyDto))]
+    [ValidateRouteIdMatch]
     public async Task<ActionResult<CompanyDto>> PutCompany(Guid id, UpdateCompanyDto dto)
     {
         // if (id != dto.Id) return BadRequest(); 
@@ -42,29 +42,23 @@ public class CompaniesController : ControllerBase
     }
 
 
-    //[HttpPost]
-    //public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto dto)
-    //{
-    //    if (dto.Employees is not null && dto.Employees.Any())
-    //    {
-    //        var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
-    //        IEnumerable<Guid> validIds = await _uow.PositionRepsoitory.GetValidPositionIds(positionIds);
+    [HttpPost]
+    public async Task<ActionResult<CompanyDto>> PostCompany(CreateCompanyDto dto)
+    {
+        //if (dto.Employees is not null && dto.Employees.Any())
+        //{
+        //    var positionIds = dto.Employees.Select(e => e.PositionId).Distinct().ToList();
+        //    IEnumerable<Guid> validIds = await _uow.PositionRepsoitory.GetValidPositionIds(positionIds);
 
-    //        var invalidIds = positionIds.Except(validIds).ToList();
-    //        if (invalidIds.Any())
-    //            return NotFound($"Position(s) not found: {string.Join(", ", invalidIds)}");
-    //    }
+        //    var invalidIds = positionIds.Except(validIds).ToList();
+        //    if (invalidIds.Any())
+        //        return NotFound($"Position(s) not found: {string.Join(", ", invalidIds)}");
+        //}
 
+        var created = await _serviceManager.CompanyService.CreateCompanyAsync(dto);
 
-    //    var company = _mapper.Map<Company>(dto);
-    //    _uow.CompanyRepsoitory.Create(company);
-    //    await _uow.CompleteAsync();
-
-    //    //ToDo fix position
-    //    var created = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id));
-
-    //    return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
-    //}
+        return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
+    }
 
 
 

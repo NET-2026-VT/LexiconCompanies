@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Companies.Shared.DTOs.CompanyDtos;
 using Domain.Contracts;
+using Domain.Models.Entities;
 using Service.Contracts;
 
 namespace Companies.Services;
@@ -43,5 +44,19 @@ public class CompanyService : ICompanyService
         await _uow.CompleteAsync();
 
         return _mapper.Map<CompanyDto>(existingCompany); //For Demo
+    }
+
+    public async Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto)
+    {
+        var company = _mapper.Map<Company>(dto);
+        _uow.CompanyRepsoitory.Create(company);
+        await _uow.CompleteAsync();
+
+        var created = dto.Employees.Any() ?
+            _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id, includeEmployees: true)) :
+            _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id));
+
+        return created;
+       
     }
 }
