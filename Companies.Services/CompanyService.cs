@@ -3,6 +3,7 @@ using Companies.Shared.DTOs.CompanyDtos;
 using Companies.Shared.Paging;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Domain.Models.Responses;
 using Service.Contracts;
 
 namespace Companies.Services;
@@ -18,38 +19,39 @@ public class CompanyService : ICompanyService
         _mapper = mapper;
     }
 
-    public async Task<PagedResponse<CompanyDto>> GetCompaniesAsync(CompanyQueryParameters query, bool trackChanges = false)
+    public async Task<ApiBaseResponse> GetCompaniesAsync(CompanyQueryParameters query, bool trackChanges = false)
     {
         IPagedList<Company> pagedList = await _uow.CompanyRepsoitory.GetCompanies(query, trackChanges);
         var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(pagedList.Items);
 
-        return new(companyDtos, query.PageNumber, query.PageSize, pagedList.TotalCount);
-
+        PagedResponse<CompanyDto> pagedResponse = new(companyDtos, query.PageNumber, query.PageSize, pagedList.TotalCount);
+        return new ApiOkResponse<PagedResponse<CompanyDto>>(pagedResponse);
     }
 
-    public async Task<CompanyDto> GetCompanyAsync(Guid id, bool includeEmployees, bool trackChanges = false)
+    public async Task<ApiBaseResponse> GetCompanyAsync(Guid id, bool includeEmployees, bool trackChanges = false)
     {
         var dto = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(id, includeEmployees, trackChanges));
 
-        if (dto == null) return null!; //Todo handle response  //NotFound();
+        if (dto == null) return new CompanyNotFoundResponse(id);
 
-        return dto;
+        return new ApiOkResponse<CompanyDto>(dto);
     }
 
-    public async Task<CompanyDto> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto)
+    public async Task<ApiBaseResponse> UpdateCompanyAsync(Guid id, UpdateCompanyDto dto)
     {
         var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
 
-        if (existingCompany == null) return null!; //ToDo: Fix! //return NotFound();
+        if (existingCompany == null) return new CompanyNotFoundResponse(id);
 
         _mapper.Map(dto, existingCompany);
 
         await _uow.CompleteAsync();
 
-        return _mapper.Map<CompanyDto>(existingCompany); //For Demo
+        var updatedCompany = _mapper.Map<CompanyDto>(existingCompany); 
+        return new ApiOkResponse<CompanyDto>(updatedCompany); //For Demo
     }
 
-    public async Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto)
+    public async Task<ApiBaseResponse> CreateCompanyAsync(CreateCompanyDto dto)
     {
         //Validate
         var company = _mapper.Map<Company>(dto);
@@ -60,16 +62,18 @@ public class CompanyService : ICompanyService
             _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id, includeEmployees: true)) :
             _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(company.Id));
 
-        return created;
-       
+        return new ApiOkResponse<CompanyDto>(created);
+
     }
 
-    public async Task DeleteCompanyAsync(Guid id)
+    public async Task<ApiBaseResponse> DeleteCompanyAsync(Guid id)
     {
         var company = await _uow.CompanyRepsoitory.GetCompany(id);
 
-        if (company == null) Console.WriteLine("");
+        if (company == null) return new CompanyNotFoundResponse(id);
         _uow.CompanyRepsoitory.Delete(company);
         await _uow.CompleteAsync();
+
+        return new ApiNoContentResponse();
     }
 }
