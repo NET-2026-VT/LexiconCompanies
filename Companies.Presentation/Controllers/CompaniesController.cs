@@ -1,3 +1,4 @@
+using Companies.Presentation.Extensions;
 using Companies.Presentation.Filters;
 using Companies.Shared.DTOs.CompanyDtos;
 using Companies.Shared.Paging;
@@ -18,17 +19,19 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<PagedResponse<CompanyDto>>> GetAllCompany([FromQuery]CompanyQueryParameters query)
     {
-        var dto = await _serviceManager.CompanyService.GetCompaniesAsync(query);
+        var response = await _serviceManager.CompanyService.GetCompaniesAsync(query);
 
-        return Ok(dto);
+        var companies = response.GetResult<PagedResponse<CompanyDto>>();
+
+        return Ok(companies);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
-        var dto = await _serviceManager.CompanyService.GetCompanyAsync(id, includeEmployees);
+        var response = await _serviceManager.CompanyService.GetCompanyAsync(id, includeEmployees);
 
-        return dto;
+        return response.GetResult<CompanyDto>();
     }
 
     [HttpPut("{id}")]
@@ -37,8 +40,11 @@ public class CompaniesController : ControllerBase
     {
         // if (id != dto.Id) return BadRequest(); 
 
-        var updatedCompany = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
-        return updatedCompany; //For Demo
+        var response = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
+
+
+
+        return response.GetResult<CompanyDto>(); //For Demo
         //return NoContent();
     }
 
@@ -47,7 +53,10 @@ public class CompaniesController : ControllerBase
     [TypeFilter(typeof(ValidatePositionIdsAttribute))]
     public async Task<ActionResult<CompanyDto>> PostCompany(CreateCompanyDto dto)
     {
-        var created = await _serviceManager.CompanyService.CreateCompanyAsync(dto);
+        var response = await _serviceManager.CompanyService.CreateCompanyAsync(dto);
+
+        
+        var created = response.GetResult<CompanyDto>();
 
         return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
     }
@@ -57,7 +66,8 @@ public class CompaniesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCompany(Guid id)
     {
-        await _serviceManager.CompanyService.DeleteCompanyAsync(id);
+        var response = await _serviceManager.CompanyService.DeleteCompanyAsync(id);
+
         return NoContent();
     }
 
