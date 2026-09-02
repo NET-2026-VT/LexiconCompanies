@@ -31,7 +31,7 @@ public class CompanyService : ICompanyService
     {
         var dto = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(id, includeEmployees, trackChanges));
 
-        if (dto == null) return null!; //Todo handle response  //NotFound();
+        if (dto == null) throw new Exception("Company not found");
 
         return dto;
     }
