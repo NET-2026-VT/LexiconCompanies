@@ -2,7 +2,7 @@
 
 namespace Companies.Shared.Paging;
 
-public abstract record QueryParameters
+public abstract record QueryParameters : IValidatableObject
 {
     private const int _maxPageSize = 100;
 
@@ -14,4 +14,13 @@ public abstract record QueryParameters
 
     public int GetOffset => checked((PageNumber - 1) * PageSize);
 
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if ((long)(PageNumber - 1) * PageSize > int.MaxValue)
+        {
+            yield return new ValidationResult(
+                "The requested page is too large.",
+                [nameof(PageNumber), nameof(PageSize)]);
+        }
+    }
 }
