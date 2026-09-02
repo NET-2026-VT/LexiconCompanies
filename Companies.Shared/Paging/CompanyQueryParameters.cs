@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Companies.Shared.Paging;
 
-public sealed class CompanyQueryParameters : QueryParameters
+public sealed record CompanyQueryParameters : QueryParameters
 {
-    public bool IncludeEmployees { get; set; }
+    public bool IncludeEmployees { get; init; }
 
 }

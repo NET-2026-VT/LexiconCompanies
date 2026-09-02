@@ -19,12 +19,12 @@ public class CompanyRepsoitory : RepositoryBase<Company>, ICompanyRepsoitory
 
     public async Task<IPagedList<Company>> GetCompanies(CompanyQueryParameters query, bool trackChanges = false)
     {
-        var companies = GetCompanyQuery(query.IncludeEmployees, trackChanges);
+        IQueryable<Company> companies = GetCompanyQuery(query.IncludeEmployees, trackChanges);
 
         //add pagination to query.
-        var res = await companies
-                          .OrderBy(c => c.Id)
-                          .ToPagedListAsync(query);
+        IPagedList<Company> res = await companies
+                                         .OrderBy(c => c.Id)
+                                         .ToPagedListAsync(query);
 
         return res;
 

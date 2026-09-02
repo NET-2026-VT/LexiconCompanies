@@ -1,6 +1,7 @@
 ﻿using Companies.Infrastructure.Paging;
 using Companies.Shared.Paging;
 using Domain.Contracts;
+using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Companies.Infrastructure.Extensions;
@@ -11,8 +12,8 @@ public static class QueryableExtensions
         this IQueryable<T> query,
         QueryParameters parameters) where T : class
     {
-        var totalCount = await query.CountAsync();
-        var items = await query
+        int totalCount = await query.CountAsync();
+        List<T> items =  await query
                          .Skip(parameters.GetOffset)
                          .Take(parameters.PageSize)
                          .ToListAsync();
