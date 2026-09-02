@@ -54,17 +54,12 @@ public class CompaniesController : ControllerBase
 
 
 
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> DeleteCompany(Guid id)
-    //{
-    //    var company = await _uow.CompanyRepsoitory.GetCompany(id);
-
-    //    if (company == null) return NotFound();
-    //    _uow.CompanyRepsoitory.Delete(company);
-    //    await _uow.CompleteAsync();
-
-    //    return NoContent();
-    //}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCompany(Guid id)
+    {
+        await _serviceManager.CompanyService.DeleteCompanyAsync(id);
+        return NoContent();
+    }
 
 
     //[HttpPatch("{id}")]

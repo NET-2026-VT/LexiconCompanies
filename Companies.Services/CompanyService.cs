@@ -63,4 +63,13 @@ public class CompanyService : ICompanyService
         return created;
        
     }
+
+    public async Task DeleteCompanyAsync(Guid id)
+    {
+        var company = await _uow.CompanyRepsoitory.GetCompany(id);
+
+        if (company == null) Console.WriteLine("");
+        _uow.CompanyRepsoitory.Delete(company);
+        await _uow.CompleteAsync();
+    }
 }
