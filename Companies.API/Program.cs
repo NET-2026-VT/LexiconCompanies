@@ -32,28 +32,7 @@ internal class Program
 
         var app = builder.Build();
 
-        app.UseExceptionHandler(builder =>
-        {
-            builder.Run(async context =>
-            {
-                var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-                if(contextFeature != null)
-                {
-                    var problemDetails = new ProblemDetails
-                    {
-                        Status = context.Response.StatusCode,
-                        Title = "Internal Server Error",
-                        Detail = contextFeature.Error.Message,
-                        Instance = context.Request.Path
-                    };
-
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    //context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsJsonAsync(problemDetails);
-                }
-
-            });
-        });
+        app.ConfigureExceptionHandler();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
