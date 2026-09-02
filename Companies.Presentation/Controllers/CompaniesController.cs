@@ -7,7 +7,7 @@ using Service.Contracts;
 
 [Route("api/companies")]
 [ApiController]
-public class CompaniesController : ControllerBase
+public class CompaniesController : ApiControllerBase
 {
     private readonly IServiceManager _serviceManager;
 
@@ -21,6 +21,8 @@ public class CompaniesController : ControllerBase
     {
         var response = await _serviceManager.CompanyService.GetCompaniesAsync(query);
 
+        if (!response.Success) return ProcessError(response);
+
         var companies = response.GetResult<PagedResponse<CompanyDto>>();
 
         return Ok(companies);
@@ -30,6 +32,8 @@ public class CompaniesController : ControllerBase
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
         var response = await _serviceManager.CompanyService.GetCompanyAsync(id, includeEmployees);
+
+        if (!response.Success) return ProcessError(response);
 
         return response.GetResult<CompanyDto>();
     }
@@ -42,7 +46,7 @@ public class CompaniesController : ControllerBase
 
         var response = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
 
-
+        if (!response.Success) return ProcessError(response);
 
         return response.GetResult<CompanyDto>(); //For Demo
         //return NoContent();
@@ -55,7 +59,8 @@ public class CompaniesController : ControllerBase
     {
         var response = await _serviceManager.CompanyService.CreateCompanyAsync(dto);
 
-        
+        if (!response.Success) return ProcessError(response);
+
         var created = response.GetResult<CompanyDto>();
 
         return CreatedAtAction(nameof(GetCompanyById), new { id = created.Id }, created);
@@ -67,6 +72,8 @@ public class CompaniesController : ControllerBase
     public async Task<IActionResult> DeleteCompany(Guid id)
     {
         var response = await _serviceManager.CompanyService.DeleteCompanyAsync(id);
+
+        if (!response.Success) return ProcessError(response);
 
         return NoContent();
     }
