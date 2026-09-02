@@ -3,6 +3,7 @@ using Companies.Shared.DTOs.CompanyDtos;
 using Companies.Shared.Paging;
 using Domain.Contracts;
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Service.Contracts;
 
 namespace Companies.Services;
@@ -31,7 +32,7 @@ public class CompanyService : ICompanyService
     {
         var dto = _mapper.Map<CompanyDto>(await _uow.CompanyRepsoitory.GetCompany(id, includeEmployees, trackChanges));
 
-        if (dto == null) throw new Exception("Company not found");
+        if (dto == null) throw new CompanyNotFoundException(id);
 
         return dto;
     }
@@ -40,7 +41,7 @@ public class CompanyService : ICompanyService
     {
         var existingCompany = await _uow.CompanyRepsoitory.GetCompany(id, trackChanges: true);
 
-        if (existingCompany == null) return null!; //ToDo: Fix! //return NotFound();
+        if (existingCompany == null) throw new CompanyNotFoundException(id);
 
         _mapper.Map(dto, existingCompany);
 
@@ -51,7 +52,6 @@ public class CompanyService : ICompanyService
 
     public async Task<CompanyDto> CreateCompanyAsync(CreateCompanyDto dto)
     {
-        //Validate
         var company = _mapper.Map<Company>(dto);
         _uow.CompanyRepsoitory.Create(company);
         await _uow.CompleteAsync();
@@ -68,7 +68,8 @@ public class CompanyService : ICompanyService
     {
         var company = await _uow.CompanyRepsoitory.GetCompany(id);
 
-        if (company == null) Console.WriteLine("");
+        if (company == null) throw new CompanyNotFoundException(id);
+
         _uow.CompanyRepsoitory.Delete(company);
         await _uow.CompleteAsync();
     }

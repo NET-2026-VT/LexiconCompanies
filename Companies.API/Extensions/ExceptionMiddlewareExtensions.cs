@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Domain.Models.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Runtime.CompilerServices;
 
 namespace Companies.API.Extensions;
@@ -15,16 +17,23 @@ public static class ExceptionMiddlewareExtensions
                 var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
                 if (contextFeature != null)
                 {
-                    var problemDetails = new ProblemDetails
+                    var problemDetailsFactory = app.Services.GetRequiredService<ProblemDetailsFactory>();
+                    var exception = contextFeature.Error;
+
+                    var (statusCode, title) = exception switch
                     {
-                        Status = context.Response.StatusCode,
-                        Title = "Internal Server Error",
-                        Detail = contextFeature.Error.Message,
-                        Instance = context.Request.Path
+                        NotFoundException ex => (StatusCodes.Status404NotFound, ex.Title),
+                        _ => (StatusCodes.Status500InternalServerError, "Internal Server Error")
                     };
 
-                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    //context.Response.ContentType = "application/json";
+                    var problemDetails = problemDetailsFactory.CreateProblemDetails(
+                        context,
+                        statusCode,
+                        title,
+                        detail: exception.Message,
+                        instance: context.Request.Path);
+
+                    context.Response.StatusCode = statusCode;
                     await context.Response.WriteAsJsonAsync(problemDetails);
                 }
 
