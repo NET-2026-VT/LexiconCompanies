@@ -1,8 +1,10 @@
-﻿namespace Domain.Models.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class Employee
+namespace Domain.Models.Entities;
+
+public class Employee : IdentityUser
 {
-    public Guid Id { get; set; }
+    //public Guid Id { get; set; }
 
     public required string Name { get; set; }
     public int Age { get; set; }

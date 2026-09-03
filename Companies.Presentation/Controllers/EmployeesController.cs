@@ -30,7 +30,7 @@ public class EmployeesController : ControllerBase
         if (!companyExists) return NotFound();
 
         List<EmployeeDto> employeeDtos = await _mapper.ProjectTo<EmployeeDto>
-                     (_context.Employees.Where(e => e.CompanyId.Equals(companyId)))
+                     (_context.Users.Where(e => e.CompanyId.Equals(companyId)))
                      .ToListAsync();
 
         return employeeDtos;
@@ -43,8 +43,8 @@ public class EmployeesController : ControllerBase
         var companyExists = await _context.Companies.AnyAsync(c => c.Id.Equals(companyId));
         if (!companyExists) return NotFound();
 
-        var dto = await _mapper.ProjectTo<EmployeeDto>(_context.Employees
-                               .Where(e => e.Id == id && e.CompanyId == companyId))
+        var dto = await _mapper.ProjectTo<EmployeeDto>(_context.Users
+                               .Where(e => e.Id == id.ToString() && e.CompanyId == companyId))
                                .FirstOrDefaultAsync();
 
         if (dto is null) return NotFound();
@@ -64,7 +64,7 @@ public class EmployeesController : ControllerBase
         var employee = _mapper.Map<Employee>(dto);
         employee.CompanyId = companyId;
 
-        _context.Employees.Add(employee);
+        _context.Users.Add(employee);
         await _context.SaveChangesAsync();
 
         //employee.Position = existsinPosition;
@@ -88,9 +88,9 @@ public class EmployeesController : ControllerBase
             instance: Request.Path.ToString()
             );
 
-        var employeeToPatch = await _context.Employees
+        var employeeToPatch = await _context.Users
                                            .Include(e => e.Position)
-                                           .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId);
+                                           .FirstOrDefaultAsync(e => e.Id == id.ToString() && e.CompanyId == companyId);
 
         if (employeeToPatch is null)
             return Problem(
@@ -127,8 +127,8 @@ public class EmployeesController : ControllerBase
                 statusCode: StatusCodes.Status404NotFound,
                 instance: Request.Path.ToString());
 
-        var employee = await _context.Employees
-                                     .FirstOrDefaultAsync(e => e.Id == id && e.CompanyId == companyId);
+        var employee = await _context.Users
+                                     .FirstOrDefaultAsync(e => Guid.Parse(e.Id) == id && e.CompanyId == companyId);
         if (employee is null)
             return Problem(
                 title: "Employee not found.",
@@ -136,7 +136,7 @@ public class EmployeesController : ControllerBase
                 statusCode: StatusCodes.Status404NotFound,
                 instance: Request.Path.ToString());
 
-        _context.Employees.Remove(employee);
+        _context.Users.Remove(employee);
         await _context.SaveChangesAsync();
 
         return NoContent();

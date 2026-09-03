@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Companies.Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<Employee>(options)
 {
     public DbSet<Company> Companies { get; set; } = default!;
-    public DbSet<Employee> Employees { get; set; } = default!;
+    //public DbSet<Employee> Users { get; set; } = default!;
     public DbSet<Position> Positions { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -16,7 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Company>().ToTable("Company");
-        modelBuilder.Entity<Employee>().ToTable("Employee");
+        modelBuilder.Entity<Employee>().ToTable("AspNetUsers");
         modelBuilder.Entity<Position>().ToTable("Position");
     }
 }

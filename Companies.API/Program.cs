@@ -31,10 +31,19 @@ internal class Program
         builder.Services.AddServiceLayer();
         builder.Services.AddAuthentication();
 
-        builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-                        .AddRoles<IdentityRole>()
-                        .AddEntityFrameworkStores<ApplicationDbContext>()
-                        .AddDefaultTokenProviders();
+        builder.Services.AddIdentityCore<Employee>(opt =>
+        {
+            opt.Password.RequireDigit = false;
+            opt.Password.RequireLowercase = false;
+            opt.Password.RequireUppercase = false;
+            opt.Password.RequireNonAlphanumeric = false;
+            opt.Password.RequiredLength = 3;
+
+            opt.User.RequireUniqueEmail = true;
+        })
+           .AddRoles<IdentityRole>()
+           .AddEntityFrameworkStores<ApplicationDbContext>()
+           .AddDefaultTokenProviders();
 
 
         var app = builder.Build();
@@ -55,8 +64,6 @@ internal class Program
         app.UseAuthorization();
 
         app.MapControllers();
-        app.MapGroup("/api/auth")
-            .MapIdentityApi<ApplicationUser>();
 
         app.Run();
     }
