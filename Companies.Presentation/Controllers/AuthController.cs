@@ -1,4 +1,5 @@
 ﻿using Companies.Shared.DTOs.AuthDtos;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -18,5 +19,10 @@ public class AuthController(IServiceManager serviceManager) : ControllerBase
     public async Task<ActionResult> RegisterUser(UserRegistrationDto userRegistrationDto)
     {
         IdentityResult identityResult = await _serviceManager.AuthService.RegisterUserAsync(userRegistrationDto);
+
+        return identityResult.Succeeded
+            ? StatusCode(StatusCodes.Status201Created)
+            : BadRequest(identityResult.Errors);
+
     }
 }

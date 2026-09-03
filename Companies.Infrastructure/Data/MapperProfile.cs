@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Companies.Shared.DTOs.AuthDtos;
 using Companies.Shared.DTOs.CompanyDtos;
 using Companies.Shared.DTOs.EmployeeDtos;
 using Domain.Models.Entities;
@@ -72,6 +73,7 @@ public class MapperProfile : Profile
         CreateMap<Employee, EmployeeDto>();
         CreateMap<CreateEmployeeDto, Employee>();
         CreateMap<UpdateEmployeeDto, Employee>().ReverseMap();
+        CreateMap<UserRegistrationDto, Employee>();
 
     }
 }

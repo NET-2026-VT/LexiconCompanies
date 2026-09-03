@@ -14,6 +14,11 @@ public class PositionRepsoitory : IPositionRepsoitory
         _context = context;
     }
 
+    public async Task<bool> AnyAsync(Guid positionId)
+    {
+        return await _context.Positions.AnyAsync(p => p.Id == positionId);
+    }
+
     public async Task<IEnumerable<Guid>> GetValidPositionIds(List<Guid> positionIds)
     {
         return await _context.Positions
