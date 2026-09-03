@@ -1,6 +1,7 @@
 using Companies.Presentation.Filters;
 using Companies.Shared.DTOs.CompanyDtos;
 using Companies.Shared.Paging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 
@@ -23,6 +24,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<CompanyDto>> GetCompanyById(Guid id, bool includeEmployees)
     {
         var dto = await _serviceManager.CompanyService.GetCompanyAsync(id, includeEmployees);

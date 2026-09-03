@@ -1,4 +1,6 @@
-﻿namespace Domain.Models.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Domain.Models.Entities;
 
 public class Employee
 {
@@ -14,4 +16,9 @@ public class Employee
     //Navigation property
     public Company Company { get; set; } = null!;
     public Position Position { get; set; } = null!;
+}
+
+public class ApplicationUser : IdentityUser
+{
+
 }
