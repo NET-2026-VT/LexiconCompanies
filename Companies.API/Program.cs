@@ -2,6 +2,7 @@ using Companies.API.Extensions;
 using Companies.API.Services;
 using Companies.Presentation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 internal class Program
@@ -28,6 +29,12 @@ internal class Program
         builder.Services.AddHostedService<DataSeedService>();
         builder.Services.AddRepositories();
         builder.Services.AddServiceLayer();
+        builder.Services.AddAuthentication();
+
+        builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                        .AddRoles<IdentityRole>()
+                        .AddEntityFrameworkStores<ApplicationDbContext>()
+                        .AddDefaultTokenProviders();
 
 
         var app = builder.Build();
@@ -44,9 +51,12 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
+        app.MapGroup("/api/auth")
+            .MapIdentityApi<ApplicationUser>();
 
         app.Run();
     }
