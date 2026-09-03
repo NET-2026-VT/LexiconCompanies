@@ -12,9 +12,11 @@ internal class DataSeedService : IHostedService
     private List<Position> _positions = [];
     private UserManager<Employee> userManager = null!;
     private RoleManager<IdentityRole> roleManager = null!;
+    private string password = null!;
     private const string EmployeeRole = "Employee";
     private const string AdminRole = "Admin";
     private const string TeamLead = "TeamLead";
+    private const string DefaultAdminEmail = "comp@admin.com";
 
     public DataSeedService(IServiceProvider serviceProvider, IConfiguration configuration, ILogger<DataSeedService> logger)
     {
@@ -41,9 +43,13 @@ internal class DataSeedService : IHostedService
         roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>()
                             ?? throw new ArgumentNullException();
 
+        password = configuration["password"]!;
+        ArgumentNullException.ThrowIfNull(password, nameof(password));
+
+
+
         try
         {
-
             await CreateRolesAsync([AdminRole, EmployeeRole]);
 
             _positions =
@@ -54,8 +60,9 @@ internal class DataSeedService : IHostedService
                 ];
 
             context.AddRange(_positions);
-            IEnumerable<Company> companies = GenerateCompanies(10);
+            List<Company> companies = GenerateCompanies(10);
             context.Companies.AddRange(companies);
+            await CreateDefaultAdminAsync(companies[0]);
             await GenerateEmployeesAsync(50, companies);
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Seed complete");
@@ -65,6 +72,22 @@ internal class DataSeedService : IHostedService
             logger.LogError($"Data seed fail with message: {ex.Message}. Exceeption: {ex.InnerException}");
             throw;
         }
+    }
+
+    private async Task CreateDefaultAdminAsync(Company company)
+    {
+        var teamLead = _positions.First(p => p.Name == TeamLead);
+        var admin = new Employee
+        {
+            Name = "Company Admin",
+            Age = 30,
+            Email = DefaultAdminEmail,
+            UserName = DefaultAdminEmail,
+            Company = company,
+            Position = teamLead
+        };
+
+        await CreateUserAsync(admin, AdminRole);
     }
 
     private async Task CreateRolesAsync(string[] rolenames)
@@ -80,7 +103,7 @@ internal class DataSeedService : IHostedService
         }
     }
 
-    private IEnumerable<Company> GenerateCompanies(int numberOfCompanies)
+    private List<Company> GenerateCompanies(int numberOfCompanies)
     {
         var faker = new Faker<Company>("sv").Rules((f, c) =>
         {
@@ -105,31 +128,38 @@ internal class DataSeedService : IHostedService
             e.Age = f.Random.Int(18, 70);
             e.Position = _positions[f.Random.Int(0, _positions.Count - 1)];
             e.Email = f.Person.Email;
-            e.UserName = f.Person.UserName;
+            e.UserName = $"{f.Person.UserName}{f.UniqueIndex}";
             e.Company = f.PickRandom(companies);
         });
 
         var users = faker.Generate(numberofEmployees);
 
-        var teamlead = _positions.First(p => p.Name == TeamLead);
-
-        var password = configuration["password"];
-        ArgumentNullException.ThrowIfNull(password, nameof(password));
+        
 
         foreach (var user in users)
         {
-            var result = await userManager.CreateAsync(user, password);
-
-            if (!result.Succeeded) 
-                throw new Exception(string.Join("\n", 
-                result.Errors.Select(e => $"{e.Code}: {e.Description}")));
-
             var role = user.Position.Name == TeamLead
                 ? AdminRole
                 : EmployeeRole;
 
-            await userManager.AddToRoleAsync(user, role);
+            await CreateUserAsync(user, role);
         }
+    }
+
+    private async Task CreateUserAsync(Employee user, string role)
+    {
+        var result = await userManager.CreateAsync(user, password);
+
+        if (!result.Succeeded)
+            throw new Exception(string.Join("\n",
+            result.Errors.Select(e => $"{e.Code}: {e.Description}")));
+
+        var roleResult = await userManager.AddToRoleAsync(user, role);
+
+        if (!roleResult.Succeeded)
+            throw new Exception(string.Join("\n",
+            roleResult.Errors.Select(e => $"{e.Code}: {e.Description}")));
+
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
