@@ -15,4 +15,7 @@ public record EmployeeManipulationDto
 
     [Required]
     public Guid PositionId { get; init; }
+
+    [Required]
+    public Guid CompanyId { get; init; }
 }

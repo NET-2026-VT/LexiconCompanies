@@ -18,6 +18,8 @@ public static class ServiceExtensions
     {
         services.AddScoped<IServiceManager, ServiceManager>();
         services.AddScoped<ICompanyService, CompanyService>();
+        services.AddScoped<IAuthService, AuthService>();
         services.AddLazy<ICompanyService>();
+        services.AddLazy<IAuthService>();
     }
 }
