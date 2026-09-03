@@ -12,16 +12,10 @@ namespace Companies.Presentation.Controllers;
 
 [Route("api/companies/{companyId}/employees")]
 [ApiController]
-public class EmployeesController : ControllerBase
+public class EmployeesController(ApplicationDbContext context, IMapper mapper) : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-
-    public EmployeesController(ApplicationDbContext context, IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
+    private readonly ApplicationDbContext _context = context;
+    private readonly IMapper _mapper = mapper;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees(Guid companyId)

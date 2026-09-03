@@ -4,19 +4,16 @@ using Companies.Shared.Paging;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 
+namespace Companies.Presentation.Controllers;
+
 [Route("api/companies")]
 [ApiController]
-public class CompaniesController : ControllerBase
+public class CompaniesController(IServiceManager serviceManager) : ControllerBase
 {
-    private readonly IServiceManager _serviceManager;
-
-    public CompaniesController(IServiceManager serviceManager)
-    {
-        _serviceManager = serviceManager;
-    }
+    private readonly IServiceManager _serviceManager = serviceManager;
 
     [HttpGet]
-    public async Task<ActionResult<PagedResponse<CompanyDto>>> GetAllCompany([FromQuery]CompanyQueryParameters query)
+    public async Task<ActionResult<PagedResponse<CompanyDto>>> GetAllCompany([FromQuery] CompanyQueryParameters query)
     {
         var dto = await _serviceManager.CompanyService.GetCompaniesAsync(query);
         return Ok(dto);
@@ -38,7 +35,7 @@ public class CompaniesController : ControllerBase
 
         var updatedCompany = await _serviceManager.CompanyService.UpdateCompanyAsync(id, dto);
         return updatedCompany; //For Demo
-        //return NoContent();
+                               //return NoContent();
     }
 
 
